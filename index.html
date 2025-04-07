@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<script>
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+  })();
+</script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,14 +21,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <button id="theme-toggle" title="Toggle Dark/Light Mode">☀️</button>
+    <button id="theme-toggle" title="Toggle Dark/Light Mode">
+        </button>
 
     <div id="game-container">
         <h1>Linux Permissions Fun! <span class="penguin"></span></h1>
 
         <div id="phase-0" class="phase-section">
             <p>Hello friend! <span class="wave">👋</span> Let's learn the secrets of Linux permissions together! It's easier than you think!</p>
-            <button id="start-learning-btn" class="action-btn">Let's Go! <span class="rocket"></span></button>
+            <button id="goto-phase-1-btn" class="action-btn">Let's Go! <span class="rocket"></span></button>
         </div>
 
         <div id="phase-1" class="phase-section hidden">
@@ -29,26 +41,19 @@
                     <li><code>w</code> = <strong>Write</strong> (like using a pencil ✏️)</li>
                     <li><code>x</code> = <strong>Execute</strong> (like pressing a play button ▶️)</li>
                 </ul>
-                <p>Each has a secret number value:</p>
-                <ul>
-                    <li><code>r</code> = <strong>4</strong></li>
-                    <li><code>w</code> = <strong>2</strong></li>
-                    <li><code>x</code> = <strong>1</strong></li>
-                </ul>
-                <p>If a permission is missing (<code>-</code>), its value is <strong>0</strong>.</p>
+                <p>Each has a secret number value: <code>r=4</code>, <code>w=2</code>, <code>x=1</code>. If a permission is missing (<code>-</code>), its value is <strong>0</strong>.</p>
                 <p>We <strong>add these numbers up</strong> for any group of three! <br>
                    Example: <code>rw-</code> = <code>r(4)</code> + <code>w(2)</code> + <code>-(0)</code> = <strong>6</strong>.<br>
                    Example: <code>r-x</code> = <code>r(4)</code> + <code>-(0)</code> + <code>x(1)</code> = <strong>5</strong>.
                 </p>
-                <p>Ready to check your understanding?</p>
             </div>
-            <button id="goto-cheat-sheet-btn" class="action-btn">Show me all combos! <span class="book"></span></button>
+            <button id="goto-phase-2-btn" class="action-btn">Show me all combos! <span class="book"></span></button>
         </div>
 
-        <div id="phase-cheat-sheet" class="phase-section hidden">
+        <div id="phase-2" class="phase-section hidden">
              <h2>The Permission Cheat Sheet! <span class="book"></span></h2>
              <div id="cheat-sheet-section">
-                 <p>Here are all the possible combinations for one group (like User, Group, or Other) and their magic numbers:</p>
+                 <p>Here are all the possible combinations for one set of <code>rwx</code> permissions and their magic numbers:</p>
                  <ul>
                      <li><code>---</code> (0+0+0) = <strong>0</strong> (No permissions)</li>
                      <li><code>--x</code> (0+0+1) = <strong>1</strong> (Execute only)</li>
@@ -59,78 +64,97 @@
                      <li><code>rw-</code> (4+2+0) = <strong>6</strong> (Read & Write)</li>
                      <li><code>rwx</code> (4+2+1) = <strong>7</strong> (Read, Write & Execute - Full!)</li>
                  </ul>
-                 <p>Keep these in mind! <span class="brain"></span></p>
+                 <p>Remember these values (0-7)! <span class="brain"></span></p>
              </div>
-             <button id="start-phase1-quiz-btn" class="action-btn">Okay, Quiz Me! <span class="clap"></span></button>
-
-             <div id="phase1-quiz" class="hidden">
-                 <p>What's the magic number for this permission set?</p>
-                 <div id="phase1-question" class="permission-string-display">rwx</div>
-                 <div id="phase1-options" class="options-grid"></div>
-                 <div id="phase1-feedback" class="feedback"></div>
-                 <p>Round: <span id="phase1-round">1</span> / 5</p>
-             </div>
-        </div>
-
-
-        <div id="phase-2" class="phase-section hidden">
-             <h2>Part 2: Meet the Crew! <span class="users">🧑‍🤝‍🧑🌍</span></h2>
-             <div class="explanation-section">
-                <p>Awesome! <span class="clap"></span> Now, permissions apply to <strong>three groups</strong>:</p>
-                <ul>
-                    <li><strong>U</strong>ser (You, the owner! <span class="user-icon">👤</span>)</li>
-                    <li><strong>G</strong>roup (Your team! <span class="group-icon">👥</span>)</li>
-                    <li><strong>O</strong>ther (Everyone else! <span class="other-icon">🌍</span>)</li>
-                </ul>
-                <p>A full permission string shows codes for all three, like <code>rwx r-x r--</code>.</p>
-                <p>We calculate the magic number (0-7 from our cheat sheet!) for <strong>each group separately</strong>:</p>
-                <p><code><span style="color: #e74c3c;">rwx</span>&nbsp;<span style="color: #3498db;">r-x</span>&nbsp;<span style="color: #2ecc71;">r--</span></code></p>
-                <ul>
-                    <li>User (<code>rwx</code>) = <strong>7</strong></li>
-                    <li>Group (<code>r-x</code>) = <strong>5</strong></li>
-                    <li>Other (<code>r--</code>) = <strong>4</strong></li>
-                </ul>
-                <p>Because each number is 0-7, this system is called <strong>Octal</strong>! Fancy name, simple idea. Let's practice finding the number for just one group.</p>
-            </div>
-             <button id="start-phase2-quiz-btn" class="action-btn">Practice Time! <span class="brain"></span></button>
-
-            <div id="phase2-quiz" class="hidden">
-                 <p>What's the number for the <strong id="phase2-target-group" style="color: var(--accent-color);">User</strong> group in:</p>
-                 <div id="phase2-question" class="permission-string-display">rwx rwx rwx</div>
-                 <div id="phase2-options" class="options-grid"></div>
-                 <div id="phase2-feedback" class="feedback"></div>
-                 <p>Round: <span id="phase2-round">1</span> / 5</p>
-            </div>
+             <button id="goto-phase-3-btn" class="action-btn">Who are permissions FOR? <span class="users">👤</span></button>
         </div>
 
         <div id="phase-3" class="phase-section hidden">
-             <h2>Part 3: The Grand Finale! <span class="rocket"></span></h2>
+             <h2>Part 2: Meet the Crew! <span class="users">🧑‍🤝‍🧑🌍</span></h2>
              <div class="explanation-section">
-                 <p>You're doing fantastic! <span class="party"></span> Let's put it ALL together.</p>
-                 <p>Just line up the numbers for User, Group, and Other!</p>
-                 <p>Example: <code>-rw- r-- ---</code></p>
+                 <p>Great! <span class="clap"></span> So, who actually gets these permissions? There are three main categories:</p>
                  <ul>
-                     <li>User (<code>rw-</code>) = <strong>6</strong></li>
-                     <li>Group (<code>r--</code>) = <strong>4</strong></li>
-                     <li>Other (<code>---</code>) = <strong>0</strong></li>
+                     <li><strong class="ugo-user highlight-user">User (Owner)</strong>: This is YOU, the person who owns the file! Think of it like <strong class="ugo-user">your personal diary 📓</strong>. You usually have the most control. The first set of <code>rwx</code> permissions is for the User.</li>
+                     <li><strong class="ugo-group highlight-group">Group</strong>: This is like <strong class="ugo-group">your team or club 🤝</strong>. Files can belong to a group, and anyone in that group gets these specific permissions. Useful for sharing with teammates! The second set of <code>rwx</code> is for the Group.</li>
+                     <li><strong class="ugo-other highlight-other">Other</strong>: This is <strong class="ugo-other">everyone else 🌍</strong> on the system who isn't the User and isn't in the Group. Think of it like a <strong class="ugo-other">public notice board 📌</strong>. The third set of <code>rwx</code> is for Others.</li>
                  </ul>
-                 <p>The final Octal code is... <strong><code>640</code></strong>! Easy peasy!</p>
-                 <p>Ready for the timed challenge? Match the full string to its 3-digit code. Good luck! <span class="star">🌟</span></p>
-            </div>
-             <button id="start-phase3-quiz-btn" class="action-btn">Start Timed Quiz!</button>
+                 <p>So, a full permission string shows permissions for all three, in this specific order: <strong class="ugo-user">User</strong> - <strong class="ugo-group">Group</strong> - <strong class="ugo-other">Other</strong>.</p>
+                 <p class="perm-example">Example: <code><span class="p-user">rwx</span><span class="p-group">r-x</span><span class="p-other">r--</span></code></p>
+                 <ul>
+                      <li><span class="ugo-user">User</span> permissions are <code>rwx</code>.</li>
+                      <li><span class="ugo-group">Group</span> permissions are <code>r-x</code>.</li>
+                      <li><span class="ugo-other">Other</span> permissions are <code>r--</code>.</li>
+                 </ul>
+             </div>
+             <button id="goto-phase-4-btn" class="action-btn">How do we combine them? <span class="brain"></span></button>
+        </div>
 
-            <div id="phase3-quiz" class="hidden">
+        <div id="phase-4" class="phase-section hidden">
+             <h2>Part 3: Building the Code! <span class="tools">🛠️</span></h2>
+             <div class="explanation-section">
+                  <p>Almost there! We just take the magic number (0-7 from the Cheat Sheet) for each member of the crew and line them up!</p>
+                  <p>Remember the order: <strong class="ugo-user">User</strong>, then <strong class="ugo-group">Group</strong>, then <strong class="ugo-other">Other</strong>.</p>
+                  <p>Let's use our example: <code class="perm-example"><span class="p-user">rwx</span><span class="p-group">r-x</span><span class="p-other">r--</span></code></p>
+                  <ul>
+                       <li><strong class="ugo-user highlight-user">User (<code>rwx</code>)</strong> = 4+2+1 = <strong class="ugo-user">7</strong></li>
+                       <li><strong class="ugo-group highlight-group">Group (<code>r-x</code>)</strong> = 4+0+1 = <strong class="ugo-group">5</strong></li>
+                       <li><strong class="ugo-other highlight-other">Other (<code>r--</code>)</strong> = 4+0+0 = <strong class="ugo-other">4</strong></li>
+                  </ul>
+                  <p>Line them up: <strong class="ugo-user">7</strong><strong class="ugo-group">5</strong><strong class="ugo-other">4</strong>. So the full Octal code is <strong><code>754</code></strong>!</p>
+                  <p>Another one: <code class="perm-example"><span class="p-user">rw-</span><span class="p-group">r--</span><span class="p-other">---</span></code></p>
+                   <ul>
+                       <li><strong class="ugo-user highlight-user">User (<code>rw-</code>)</strong> = 4+2+0 = <strong class="ugo-user">6</strong></li>
+                       <li><strong class="ugo-group highlight-group">Group (<code>r--</code>)</strong> = 4+0+0 = <strong class="ugo-group">4</strong></li>
+                       <li><strong class="ugo-other highlight-other">Other (<code>---</code>)</strong> = 0+0+0 = <strong class="ugo-other">0</strong></li>
+                  </ul>
+                   <p>Line them up: <strong class="ugo-user">6</strong><strong class="ugo-group">4</strong><strong class="ugo-other">0</strong>. The code is <strong><code>640</code></strong>!</p>
+                  <p>Let's practice finding the value for just one group again, keeping the colors in mind!</p>
+             </div>
+             <button id="start-phase5-quiz-btn" class="action-btn">Practice One Group! <span class="target">🎯</span></button>
+         </div>
+
+        <div id="phase-5" class="phase-section hidden">
+             <h2>Practice Round! <span class="target">🎯</span></h2>
+             <div id="phase5-quiz">
+                  <p class="quiz-target-group">What's the number for the <strong id="phase5-target-group" class="user-color">User</strong> group in:</p>
+                  <div id="phase5-question" class="permission-string-display">rwx rwx rwx</div>
+                  <div id="phase5-options" class="options-grid"></div>
+                  <div id="phase5-feedback" class="feedback"></div>
+                  <p>Round: <span id="phase5-round">1</span> / 5</p>
+             </div>
+             </div>
+
+        <div id="phase-6" class="phase-section hidden">
+             <h2>Part 4: The Grand Finale! <span class="rocket"></span></h2>
+             <div class="explanation-section">
+                 <p>You've mastered all the pieces! <span class="party"></span></p>
+                 <p>Remember:</p>
+                 <ol>
+                     <li>Look at the 9 characters: <code class="perm-example"><span class="p-user">XXX</span><span class="p-group">XXX</span><span class="p-other">XXX</span></code></li>
+                     <li>Calculate the number (0-7) for the <strong class="ugo-user">User</strong> part.</li>
+                     <li>Calculate the number (0-7) for the <strong class="ugo-group">Group</strong> part.</li>
+                     <li>Calculate the number (0-7) for the <strong class="ugo-other">Other</strong> part.</li>
+                     <li>Combine the three numbers to get the final Octal code!</li>
+                 </ol>
+                 <p>Now for the timed challenge: Match the full permission string to its 3-digit code! Show off your skills! <span class="star">🌟</span></p>
+            </div>
+             <button id="start-phase7-quiz-btn" class="action-btn">Start Timed Quiz! <span class="timer-icon">⏱️</span></button>
+        </div>
+
+        <div id="phase-7" class="phase-section hidden">
+             <h2>Timed Challenge! <span class="timer-icon">⏱️</span></h2>
+             <div id="phase7-quiz">
                  <p>Quick! What's the 3-digit Octal code?</p>
-                 <div id="phase3-question" class="permission-string-display">rwx rwx rwx</div>
-                 <div id="phase3-options" class="options-grid"></div>
-                 <div id="phase3-feedback" class="feedback"></div>
+                 <div id="phase7-question" class="permission-string-display">rwx rwx rwx</div>
+                 <div id="phase7-options" class="options-grid"></div>
+                 <div id="phase7-feedback" class="feedback"></div>
                  <div id="stats">
                     <div>Score: <span id="score">0</span></div>
                     <div>Streak: <span id="streak">0</span></div>
                     <div>Time: <span id="timer">60</span>s</div>
                     <div>High Score: <span id="high-score">0</span></div>
                 </div>
-                 <button id="restart-phase3-btn" class="action-btn hidden">Play Again? <span class="refresh">🔄</span></button>
+                 <button id="restart-phase7-btn" class="action-btn hidden">Play Again? <span class="refresh">🔄</span></button>
             </div>
         </div>
 
@@ -138,200 +162,184 @@
 
     <script>
         // --- DOM Elements ---
-        const docElement = document.documentElement; // Get <html> element for class toggling
+        const docElement = document.documentElement;
         const themeToggle = document.getElementById('theme-toggle');
         const gameContainer = document.getElementById('game-container');
-        // Add emoji spans if you want to target them specifically
-        gameContainer.querySelectorAll('h1, h2, button, p').forEach(el => {
+        // Add emoji spans dynamically
+        gameContainer.querySelectorAll('h1, h2, button, p, li').forEach(el => {
              el.innerHTML = el.innerHTML
-                 .replace('🐧', '<span class="emoji">🐧</span>')
-                 .replace('✨', '<span class="emoji">✨</span>')
-                 .replace('👋', '<span class="emoji">👋</span>')
-                 .replace('🚀', '<span class="emoji">🚀</span>')
-                 .replace('📖', '<span class="emoji">📖</span>')
-                 .replace('✏️', '<span class="emoji">✏️</span>')
-                 .replace('▶️', '<span class="emoji">▶️</span>')
-                 .replace('📜', '<span class="emoji">📜</span>')
-                 .replace('🧠', '<span class="emoji">🧠</span>')
-                 .replace('👏', '<span class="emoji">👏</span>')
-                 .replace('🧑‍🤝‍🧑🌍', '<span class="emoji">🧑‍🤝‍🧑🌍</span>')
-                 .replace('👤', '<span class="emoji">👤</span>')
-                 .replace('👥', '<span class="emoji">👥</span>')
-                 .replace('🌍', '<span class="emoji">🌍</span>')
-                 .replace('🎉', '<span class="emoji">🎉</span>')
-                 .replace('🌟', '<span class="emoji">🌟</span>')
-                 .replace('🤔', '<span class="emoji">🤔</span>')
-                 .replace('🔄', '<span class="emoji">🔄</span>');
-
+                 .replace(/🐧/g, '<span class="emoji">🐧</span>')
+                 .replace(/✨/g, '<span class="emoji">✨</span>')
+                 .replace(/👋/g, '<span class="emoji">👋</span>')
+                 .replace(/🚀/g, '<span class="emoji">🚀</span>')
+                 .replace(/📖/g, '<span class="emoji">📖</span>')
+                 .replace(/✏️/g, '<span class="emoji">✏️</span>')
+                 .replace(/▶️/g, '<span class="emoji">▶️</span>')
+                 .replace(/📜/g, '<span class="emoji">📜</span>')
+                 .replace(/🧠/g, '<span class="emoji">🧠</span>')
+                 .replace(/👏/g, '<span class="emoji">👏</span>')
+                 .replace(/🧑‍🤝‍🧑🌍/g, '<span class="emoji">🧑‍🤝‍🧑🌍</span>')
+                 .replace(/👤/g, '<span class="emoji">👤</span>')
+                 .replace(/🤝/g, '<span class="emoji">🤝</span>')
+                 .replace(/🌍/g, '<span class="emoji">🌍</span>')
+                 .replace(/📓/g, '<span class="emoji">📓</span>')
+                 .replace(/📌/g, '<span class="emoji">📌</span>')
+                 .replace(/🛠️/g, '<span class="emoji">🛠️</span>')
+                 .replace(/🎯/g, '<span class="emoji">🎯</span>')
+                 .replace(/🎉/g, '<span class="emoji">🎉</span>')
+                 .replace(/🌟/g, '<span class="emoji">🌟</span>')
+                 .replace(/🤔/g, '<span class="emoji">🤔</span>')
+                 .replace(/⏱️/g, '<span class="emoji">⏱️</span>')
+                 .replace(/🔄/g, '<span class="emoji">🔄</span>')
+                 .replace(/🏆/g, '<span class="emoji">🏆</span>');
         });
 
 
-        const phaseSections = [
-            document.getElementById('phase-0'),
-            document.getElementById('phase-1'),
-            document.getElementById('phase-cheat-sheet'), // Added cheat sheet phase
-            document.getElementById('phase-2'),
-            document.getElementById('phase-3')
-        ];
-        const phaseQuizzes = [
-            null,
-            document.getElementById('phase1-quiz'),
-            null, // No quiz for cheat sheet
-            document.getElementById('phase2-quiz'),
-            document.getElementById('phase3-quiz')
-        ];
-        const feedbackElements = [
-            null,
-            document.getElementById('phase1-feedback'),
-            null,
-            document.getElementById('phase2-feedback'),
-            document.getElementById('phase3-feedback')
-        ];
-        const optionContainers = [
-             null,
-             document.getElementById('phase1-options'),
-             null,
-             document.getElementById('phase2-options'),
-             document.getElementById('phase3-options')
-        ];
-        const questionElements = [
-            null,
-            document.getElementById('phase1-question'),
-            null,
-            document.getElementById('phase2-question'),
-            document.getElementById('phase3-question')
-        ];
-        const roundCounters = [
-            null,
-            document.getElementById('phase1-round'),
-            null,
-            document.getElementById('phase2-round'),
-        ];
+        // Get all phase sections (Indices 0 to 7)
+        const phaseSections = Array.from({ length: 8 }, (_, i) => document.getElementById(`phase-${i}`));
 
-        // Phase 3 specific elements
+        // Indices for elements correspond to the phase they appear in
+        const phaseQuizzes = [ null, null, null, null, null, document.getElementById('phase5-quiz'), null, document.getElementById('phase7-quiz') ];
+        const feedbackElements = [ null, null, null, null, null, document.getElementById('phase5-feedback'), null, document.getElementById('phase7-feedback') ];
+        const optionContainers = [ null, null, null, null, null, document.getElementById('phase5-options'), null, document.getElementById('phase7-options') ];
+        const questionElements = [ null, null, null, null, null, document.getElementById('phase5-question'), null, document.getElementById('phase7-question') ];
+        const roundCounters = [ null, null, null, null, null, document.getElementById('phase5-round'), null, null ];
+
+        // Phase 7 (Final Quiz) specific elements
         const scoreElement = document.getElementById('score');
         const streakElement = document.getElementById('streak');
         const timerElement = document.getElementById('timer');
         const highScoreElement = document.getElementById('high-score');
-        const restartPhase3Btn = document.getElementById('restart-phase3-btn');
+        const restartPhase7Btn = document.getElementById('restart-phase7-btn');
 
         // --- Game State ---
         let currentPhase = 0;
-        let phaseRound = 0;
+        let phaseRound = 0; // Used for Phase 5 quiz
         const maxRoundsPerPhase = 5;
         let currentQuestionData = {};
-        let score = 0;
-        let streak = 0;
+        let score = 0; // For final quiz
+        let streak = 0; // For final quiz
         let timerInterval = null;
         let timeLeft = 60;
-        let highScore = localStorage.getItem('linuxPermsHighScoreCute2') || 0; // Updated key for new version
+        let highScore = localStorage.getItem('linuxPermsHighScoreCute3') || 0; // Use a unique key
         let audioCtx = null; // Audio Context for sounds
+        let isAudioInitialized = false; // Track if user has interacted for audio
 
         // --- Sound Generation (Web Audio API) ---
         function initAudio() {
-            if (!audioCtx) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (e) {
-                    console.error("Web Audio API is not supported in this browser");
-                }
+            // Initialize only once on first user interaction
+            if (isAudioInitialized || audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Play a silent sound to unlock audio context on some browsers/OS
+                const buffer = audioCtx.createBuffer(1, 1, 22050);
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                source.start(0);
+                isAudioInitialized = true; // Mark as initialized
+                console.log("AudioContext Initialized");
+            } catch (e) {
+                console.error("Web Audio API is not supported or could not be initialized:", e);
+                isAudioInitialized = true; // Prevent further attempts
             }
         }
+
 
         function playSound(type) {
-            if (!audioCtx) return; // Do nothing if audio context failed
-
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            let freq = 440; // Default A4
-            let duration = 0.15;
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime); // Start silent
-            gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.02); // Quick fade in
-
-            switch (type) {
-                case 'correct':
-                    oscillator.type = 'triangle';
-                    freq = 660; // Higher pitch (E5)
-                    duration = 0.2;
-                    gainNode.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.03); // Slightly louder
-                    break;
-                case 'incorrect':
-                    oscillator.type = 'square';
-                    freq = 220; // Lower pitch (A3)
-                    duration = 0.3;
-                    gainNode.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 0.04);
-                    break;
-                case 'nextPhase':
-                     oscillator.type = 'sine';
-                     freq = 880; // Even higher (A5)
-                     duration = 0.1;
-                     gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.01);
-                     // Add a second quick beep?
-                     setTimeout(() => {
-                         const osc2 = audioCtx.createOscillator();
-                         const gain2 = audioCtx.createGain();
-                         osc2.connect(gain2);
-                         gain2.connect(audioCtx.destination);
-                         osc2.type = 'sine';
-                         osc2.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
-                         gain2.gain.setValueAtTime(0, audioCtx.currentTime);
-                         gain2.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
-                         gain2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
-                         osc2.start(audioCtx.currentTime);
-                         osc2.stop(audioCtx.currentTime + 0.1);
-                     }, 80); // Delay second beep slightly
-                    break;
-                case 'click': // Simple click sound
-                default:
-                    oscillator.type = 'sine';
-                    freq = 440;
-                    duration = 0.08;
-                     gainNode.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
-                    break;
+            // Ensure audio is initialized and context is available
+            if (!isAudioInitialized || !audioCtx || audioCtx.state === 'suspended') {
+                 // Optionally try to resume if suspended, might require another user gesture
+                 if(audioCtx && audioCtx.state === 'suspended') {
+                     audioCtx.resume().catch(e => console.error("AudioContext resume failed:", e));
+                 }
+                // console.log("Audio not ready or allowed yet.");
+                return;
             }
 
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            // Fade out
-            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+            try {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
 
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + duration);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                let freq = 440; let duration = 0.15; let vol = 0.3;
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime); // Start silent
+
+                switch (type) {
+                    case 'correct':
+                        oscillator.type = 'triangle'; freq = 660; duration = 0.2; vol = 0.4;
+                        break;
+                    case 'incorrect':
+                        oscillator.type = 'square'; freq = 220; duration = 0.3; vol = 0.25;
+                        break;
+                    case 'nextPhase':
+                        oscillator.type = 'sine'; freq = 880; duration = 0.1; vol = 0.35;
+                         // Second beep
+                         setTimeout(() => {
+                             if (!audioCtx || audioCtx.state !== 'running') return;
+                             const osc2 = audioCtx.createOscillator(); const gain2 = audioCtx.createGain();
+                             osc2.connect(gain2); gain2.connect(audioCtx.destination); osc2.type = 'sine';
+                             osc2.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
+                             gain2.gain.setValueAtTime(0, audioCtx.currentTime);
+                             gain2.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
+                             gain2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+                             osc2.start(audioCtx.currentTime); osc2.stop(audioCtx.currentTime + 0.1);
+                         }, 80);
+                        break;
+                    case 'click': default:
+                        oscillator.type = 'sine'; freq = 440; duration = 0.08; vol = 0.2;
+                        break;
+                }
+
+                gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.02); // Quick fade in
+                oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                // Fade out
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                 console.error("Error playing sound:", e);
+            }
         }
 
+        // Add a global click listener to initialize audio on first click anywhere
+         document.body.addEventListener('click', initAudio, { once: true });
 
-        // --- Utility Functions (Keep as before, but add calls to playSound) ---
-         function showPhase(phaseNum) {
-            // Add sound for moving to a new phase (except phase 0)
-            if (phaseNum > 0 && phaseNum !== currentPhase) {
-                playSound('nextPhase');
-            }
+
+        // --- Utility Functions ---
+        function showPhase(phaseNum) {
+            if (phaseNum > 0 && phaseNum !== currentPhase) { playSound('nextPhase'); }
             phaseSections.forEach((section, index) => {
-                section.classList.toggle('hidden', index !== phaseNum);
+                // Ensure section exists before toggling class
+                if(section) section.classList.toggle('hidden', index !== phaseNum);
+                else console.warn(`Phase section ${index} not found.`);
             });
             currentPhase = phaseNum;
-            // Scroll to top of container smoothly
-             gameContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Scroll only if the container exists
+            if(gameContainer) gameContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function octalPartToSymbolic(digit) { /* ... same as before ... */
+        function octalPartToSymbolic(digit) {
             let part = '';
             part += (digit & 4) ? 'r' : '-';
             part += (digit & 2) ? 'w' : '-';
             part += (digit & 1) ? 'x' : '-';
             return part;
-         }
-        function symbolicPartToOctal(symbolicPart) { /* ... same as before ... */
+        }
+
+        function symbolicPartToOctal(symbolicPart) {
             let value = 0;
+            if (!symbolicPart || symbolicPart.length !== 3) return 0; // Basic validation
             if (symbolicPart[0] === 'r') value += 4;
             if (symbolicPart[1] === 'w') value += 2;
             if (symbolicPart[2] === 'x') value += 1;
             return value;
         }
-        function generatePermissions() { /* ... same as before ... */
+
+        function generatePermissions() {
             const parts = [
                 Math.floor(Math.random() * 8), // User
                 Math.floor(Math.random() * 8), // Group
@@ -341,303 +349,267 @@
             const octal = parts.join('');
             return { symbolic, octal, parts };
         }
-        function generateOptions(correctAnswer, numOptions, maxVal) { /* ... same as before ... */
+
+        function generateOptions(correctAnswer, numOptions, maxVal) {
              const options = new Set([correctAnswer.toString()]);
-             while (options.size < numOptions) {
+             let attempts = 0; // Prevent infinite loops
+             while (options.size < numOptions && attempts < 100) {
                  const randomOption = Math.floor(Math.random() * (maxVal + 1)).toString();
-                 // For phase 3 (3-digit), ensure correct padding if needed (rare)
                  let formattedOption = randomOption;
-                 if (maxVal > 7 && formattedOption.length < 3) {
-                      formattedOption = formattedOption.padStart(3, '0');
+                 // Pad 3-digit octal numbers correctly (e.g., 007, 070)
+                 if (maxVal > 7 && typeof correctAnswer === 'string' && correctAnswer.length === 3) {
+                     formattedOption = formattedOption.padStart(3, '0');
                  } else if (maxVal <=7 && formattedOption.length > 1 && !isNaN(parseInt(formattedOption))) {
-                     // Avoid leading zeros for single digits if accidentally generated
+                     // Avoid leading zeros for single digits (0-7)
                      formattedOption = parseInt(formattedOption).toString();
                  }
-
                  options.add(formattedOption);
+                 attempts++;
+             }
+             // If loop failed to generate enough unique options, fill with placeholders (less ideal)
+             while (options.size < numOptions) {
+                 options.add(`opt${options.size + 1}`);
              }
              return Array.from(options).sort(() => Math.random() - 0.5);
         }
 
-         function displayFeedback(phase, isCorrect, correctAnswer) {
-            const feedbackEl = feedbackElements[phase];
+         function displayFeedback(phaseIndex, isCorrect, correctAnswer) {
+            const feedbackEl = feedbackElements[phaseIndex];
             if (!feedbackEl) return;
-
+            // Always make feedback visible first, then set content/class
+            feedbackEl.className = 'feedback visible'; // Make it visible first
             if (isCorrect) {
-                feedbackEl.textContent = `Correct! ${['✨', '🎉', '🥳', '👍'][Math.floor(Math.random()*4)]}`; // Random positive emoji
-                feedbackEl.className = 'feedback correct visible';
-                playSound('correct'); // Play sound
+                feedbackEl.textContent = `Correct! ${['✨', '🎉', '🥳', '👍'][Math.floor(Math.random()*4)]}`;
+                feedbackEl.classList.add('correct');
+                playSound('correct');
             } else {
                 feedbackEl.textContent = `Not quite! The answer was ${correctAnswer} ${['🤔', '😅', '🧐'][Math.floor(Math.random()*3)]}`;
-                feedbackEl.className = 'feedback incorrect visible';
-                playSound('incorrect'); // Play sound
+                 feedbackEl.classList.add('incorrect');
+                playSound('incorrect');
             }
-            // Keep visible until next question clears it
         }
 
-        function clearFeedback(phase) {
-             const feedbackEl = feedbackElements[phase];
+        function clearFeedback(phaseIndex) {
+             const feedbackEl = feedbackElements[phaseIndex];
              if(feedbackEl) {
                  feedbackEl.textContent = '';
                  feedbackEl.className = 'feedback'; // Remove visible and color classes
              }
         }
 
-        function disableOptions(phase) { /* ... same as before ... */
-            const container = optionContainers[phase];
+        function disableOptions(phaseIndex) {
+            const container = optionContainers[phaseIndex];
              if(container) {
                  container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+             } else {
+                 // console.warn(`Option container for phase ${phaseIndex} not found.`);
              }
         }
 
-        // --- Phase Logic (Updated for sounds and cheat sheet) ---
+        // --- Phase Logic ---
 
-        function setupPhase1Quiz() {
-            phaseRound = 0;
-            phaseQuizzes[1].classList.remove('hidden'); // Show quiz section
-            document.getElementById('start-phase1-quiz-btn').classList.add('hidden'); // Hide button
-            nextPhase1Round();
-        }
-
-        function nextPhase1Round() {
-            phaseRound++;
-            if (phaseRound > maxRoundsPerPhase) {
-                 phaseQuizzes[1].classList.add('hidden'); // Hide quiz
-                 showPhase(3); // Move to Phase 2 (UGO explanation, index 3)
-                 return;
-            }
-            roundCounters[1].textContent = phaseRound;
-            clearFeedback(1);
-
-            const partValue = Math.floor(Math.random() * 8);
-            const symbolicPart = octalPartToSymbolic(partValue);
-            currentQuestionData = { symbolic: symbolicPart, answer: partValue };
-
-            questionElements[1].textContent = symbolicPart;
-            const options = generateOptions(partValue, 4, 7);
-
-            optionContainers[1].innerHTML = ''; // Clear previous options
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.classList.add('option-btn');
-                btn.textContent = opt;
-                btn.dataset.value = opt;
-                btn.onclick = () => { initAudio(); checkPhase1Answer(opt); }; // Init audio on click
-                optionContainers[1].appendChild(btn);
-            });
-        }
-
-        function checkPhase1Answer(selectedValue) {
-             disableOptions(1);
-             const correct = parseInt(selectedValue) === currentQuestionData.answer;
-             displayFeedback(1, correct, currentQuestionData.answer);
-             setTimeout(nextPhase1Round, 1800); // Increased delay for sound/reading feedback
-        }
-
-        function setupPhase2Quiz() {
+        // Phase 5 (Practice UGO) Quiz Logic
+        function setupPhase5Quiz() {
              phaseRound = 0;
-             phaseQuizzes[3].classList.remove('hidden');
-             document.getElementById('start-phase2-quiz-btn').classList.add('hidden');
-             nextPhase2Round();
+             if(phaseQuizzes[5]) phaseQuizzes[5].classList.remove('hidden'); // Show quiz container if exists
+             else { console.error("Phase 5 quiz container not found"); return; }
+             nextPhase5Round();
         }
 
-        function nextPhase2Round() {
+        function nextPhase5Round() {
              phaseRound++;
+             const roundCounterEl = roundCounters[5]; // Index 5 corresponds to phase 5
              if (phaseRound > maxRoundsPerPhase) {
-                 phaseQuizzes[3].classList.add('hidden');
-                 showPhase(4); // Move to Phase 3 (Final quiz explanation, index 4)
+                 showPhase(6); // Move to Phase 6 (Final quiz explanation)
                  return;
              }
-             // Assuming phase index for round counter is 3
-             if(roundCounters[3]) roundCounters[3].textContent = phaseRound;
-             clearFeedback(3); // Assuming feedback index is 3
-
+             if(roundCounterEl) roundCounterEl.textContent = phaseRound;
+             clearFeedback(5); // Index 5 for feedback
 
              const perms = generatePermissions();
              const targetGroupIndex = Math.floor(Math.random() * 3);
-             const targetGroupName = ['User', 'Group', 'Other'][targetGroupIndex];
+             const groupNames = ['User', 'Group', 'Other'];
+             const groupClasses = ['user-color', 'group-color', 'other-color'];
+             const targetGroupName = groupNames[targetGroupIndex];
+             const targetGroupClass = groupClasses[targetGroupIndex];
              const correctAnswer = perms.parts[targetGroupIndex];
 
              currentQuestionData = { ...perms, answer: correctAnswer, targetGroupIndex };
 
-             document.getElementById('phase2-target-group').textContent = targetGroupName;
-             questionElements[3].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+             // Update prompt with color
+             const targetGroupEl = document.getElementById('phase5-target-group');
+             if (targetGroupEl) {
+                 targetGroupEl.textContent = targetGroupName;
+                 targetGroupEl.className = targetGroupClass; // Apply color class
+             }
 
-             const options = generateOptions(correctAnswer, 4, 7);
+             // Display the permission string (Index 5)
+              if (questionElements[5]) {
+                 questionElements[5].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+              } else { console.error("Phase 5 question element not found"); return; }
 
-             optionContainers[3].innerHTML = '';
+             const options = generateOptions(correctAnswer, 4, 7); // Single digit options (0-7)
+
+             // Populate options (Index 5)
+             const optContainer = optionContainers[5];
+              if (!optContainer) { console.error("Phase 5 options container not found"); return; }
+             optContainer.innerHTML = '';
              options.forEach(opt => {
                  const btn = document.createElement('button');
                  btn.classList.add('option-btn');
                  btn.textContent = opt;
                  btn.dataset.value = opt;
-                 btn.onclick = () => { initAudio(); checkPhase2Answer(opt); }; // Init audio on click
-                 optionContainers[3].appendChild(btn);
+                 // Add onclick listener to check answer for phase 5
+                 btn.onclick = () => { checkPhase5Answer(opt); };
+                 optContainer.appendChild(btn);
              });
         }
 
-         function checkPhase2Answer(selectedValue) {
-             disableOptions(3); // Assuming options index 3
+         function checkPhase5Answer(selectedValue) {
+             disableOptions(5); // Disable options for phase 5
              const correct = parseInt(selectedValue) === currentQuestionData.answer;
-             displayFeedback(3, correct, currentQuestionData.answer); // Assuming feedback index 3
-             setTimeout(nextPhase2Round, 1800);
+             displayFeedback(5, correct, currentQuestionData.answer); // Show feedback for phase 5
+             setTimeout(nextPhase5Round, 1800); // Proceed to next round or phase
         }
 
-         function setupPhase3Quiz() {
-             score = 0;
-             streak = 0;
-             timeLeft = 60;
-             highScoreElement.textContent = highScore;
-             scoreElement.textContent = score;
-             streakElement.textContent = streak;
-             timerElement.textContent = timeLeft;
-             restartPhase3Btn.classList.add('hidden');
-             clearFeedback(4); // Assuming feedback index 4
-             phaseQuizzes[4].classList.remove('hidden');
-             document.getElementById('start-phase3-quiz-btn').classList.add('hidden');
+         // Phase 7 (Final Timed Quiz) Logic
+         function setupPhase7Quiz() {
+             score = 0; streak = 0; timeLeft = 60;
+             if(highScoreElement) highScoreElement.textContent = highScore;
+             if(scoreElement) scoreElement.textContent = score;
+             if(streakElement) streakElement.textContent = streak;
+             if(timerElement) timerElement.textContent = timeLeft;
+             if(restartPhase7Btn) restartPhase7Btn.classList.add('hidden');
+             clearFeedback(7); // Index 7 for feedback
+             if(phaseQuizzes[7]) phaseQuizzes[7].classList.remove('hidden'); // Show quiz container
+             else { console.error("Phase 7 quiz container not found"); return; }
 
-
-             nextPhase3Round(); // Display first question
+             nextPhase7Round(); // Display first question
 
              clearInterval(timerInterval); // Clear any old timers
              timerInterval = setInterval(updateTimer, 1000);
          }
 
-         function nextPhase3Round() {
-            clearFeedback(4); // Clear feedback for the new question
+         function nextPhase7Round() {
+            clearFeedback(7); // Index 7
             if (timeLeft <= 0) return; // Stop if time ran out during feedback delay
-
 
              const perms = generatePermissions();
              currentQuestionData = { ...perms, answer: perms.octal };
 
-             questionElements[4].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+             // Display the permission string (Index 7)
+             if (questionElements[7]) {
+                 questionElements[7].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+             } else { console.error("Phase 7 question element not found"); return; }
 
-             // Ensure generated octal is treated as a string for comparison
-             const options = generateOptions(perms.octal.toString(), 4, 777);
+             // Ensure generated octal is treated as a 3-digit padded string for comparison/options
+             const correctAnswerStr = perms.octal.toString().padStart(3, '0');
+             currentQuestionData.answer = correctAnswerStr; // Store padded string as answer
+             const options = generateOptions(correctAnswerStr, 4, 777); // Generate 3-digit options
 
-             optionContainers[4].innerHTML = ''; // Clear previous options
+             // Populate options (Index 7)
+             const optContainer = optionContainers[7];
+              if (!optContainer) { console.error("Phase 7 options container not found"); return; }
+             optContainer.innerHTML = '';
              options.forEach(opt => {
                  const btn = document.createElement('button');
                  btn.classList.add('option-btn');
-                 btn.textContent = opt; // Keep as string
+                 // Ensure options are also displayed padded if needed (generateOptions should handle this)
+                 btn.textContent = opt;
                  btn.dataset.value = opt;
-                 btn.onclick = () => { initAudio(); checkPhase3Answer(opt); }; // Init audio on click
-                 optionContainers[4].appendChild(btn);
+                 // Add onclick listener to check answer for phase 7
+                 btn.onclick = () => { checkPhase7Answer(opt); };
+                 optContainer.appendChild(btn);
              });
          }
 
-         function checkPhase3Answer(selectedValue) {
+         function checkPhase7Answer(selectedValue) {
             if (timeLeft <= 0) return; // Prevent answers after time's up
+             disableOptions(7); // Index 7
+             // Compare selected value (string) with the stored padded answer string
+             const correct = selectedValue === currentQuestionData.answer;
 
-             disableOptions(4);
-             const correct = selectedValue === currentQuestionData.answer.toString();
-
-             if (correct) {
-                 score++;
-                 streak++;
-                 displayFeedback(4, true);
-             } else {
-                 streak = 0;
-                 displayFeedback(4, false, currentQuestionData.answer);
-             }
+             if (correct) { score++; streak++; displayFeedback(7, true); }
+             else { streak = 0; displayFeedback(7, false, currentQuestionData.answer); }
 
              updateStats();
-             setTimeout(() => {
-                 if(timeLeft > 0) nextPhase3Round();
-             }, 1500); // Slightly longer delay for timed quiz feedback
+             setTimeout(() => { if(timeLeft > 0) nextPhase7Round(); }, 1500);
          }
 
-         function updateStats() { /* ... same as before ... */
-            scoreElement.textContent = score;
-            streakElement.textContent = streak;
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('linuxPermsHighScoreCute2', highScore);
-                highScoreElement.textContent = highScore;
-            }
+         function updateStats() {
+            if(scoreElement) scoreElement.textContent = score;
+            if(streakElement) streakElement.textContent = streak;
+             if (score > highScore) {
+                 highScore = score;
+                 localStorage.setItem('linuxPermsHighScoreCute3', highScore);
+                 if(highScoreElement) highScoreElement.textContent = highScore;
+             }
          }
 
-        function updateTimer() {
+         function updateTimer() {
             timeLeft--;
-            timerElement.textContent = timeLeft;
+            if(timerElement) timerElement.textContent = timeLeft;
             if (timeLeft <= 0) {
-                endPhase3Quiz();
+                endPhase7Quiz();
             }
         }
 
-         function endPhase3Quiz() {
+         function endPhase7Quiz() {
              clearInterval(timerInterval);
              timerInterval = null;
-             disableOptions(4);
-             feedbackElements[4].textContent = `Time's up! Final Score: ${score} ${score > highScore ? 'New High Score! 🏆' : '🎉'}`;
-             feedbackElements[4].className = 'feedback visible'; // Make it visible, no color class
+             disableOptions(7); // Index 7
+             const feedbackEl = feedbackElements[7];
+             if (feedbackEl) {
+                 feedbackEl.textContent = `Time's up! Final Score: ${score} ${score > highScore ? 'New High Score! 🏆' : '🎉'}`;
+                 feedbackEl.className = 'feedback visible'; // Make it visible, no color class
+             }
              playSound('nextPhase'); // Use phase end sound
-             restartPhase3Btn.classList.remove('hidden');
+             if(restartPhase7Btn) restartPhase7Btn.classList.remove('hidden');
          }
 
         // --- Theme Toggling ---
         function setMode(mode) {
             if (mode === 'dark') {
                 docElement.classList.add('dark-mode');
-                themeToggle.textContent = '🌙'; // Moon emoji
+                if(themeToggle) themeToggle.textContent = '🌙'; // Moon emoji
                 localStorage.setItem('theme', 'dark');
             } else {
                 docElement.classList.remove('dark-mode');
-                themeToggle.textContent = '☀️'; // Sun emoji
+                 if(themeToggle) themeToggle.textContent = '☀️'; // Sun emoji
                 localStorage.setItem('theme', 'light');
             }
         }
 
-        themeToggle.addEventListener('click', () => {
-            initAudio(); // Init audio context on first interaction
-            playSound('click'); // Play click sound
-            const currentMode = docElement.classList.contains('dark-mode') ? 'dark' : 'light';
-            setMode(currentMode === 'dark' ? 'light' : 'dark');
-        });
+        if (themeToggle) {
+             themeToggle.addEventListener('click', () => {
+                 initAudio(); // Ensure audio is ready
+                 playSound('click');
+                 const currentMode = docElement.classList.contains('dark-mode') ? 'dark' : 'light';
+                 setMode(currentMode === 'dark' ? 'light' : 'dark');
+             });
+        }
 
         // Load saved theme on startup
-        const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light
-        setMode(savedTheme);
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Set initial mode based on saved theme or system preference
+        setMode(savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light');
 
 
-        // --- Event Listeners for Phase Progression ---
-        document.getElementById('start-learning-btn').addEventListener('click', () => {
-            initAudio(); // Init on first real interaction
-            playSound('click');
-            showPhase(1);
-        });
-
-        document.getElementById('goto-cheat-sheet-btn').addEventListener('click', () => {
-             playSound('click');
-             showPhase(2); // Show Cheat Sheet (index 2)
-        });
-
-         document.getElementById('start-phase1-quiz-btn').addEventListener('click', () => {
-              playSound('click');
-              // Function called within the button itself now
-              setupPhase1Quiz();
-         });
-
-         document.getElementById('start-phase2-quiz-btn').addEventListener('click', () => {
-              playSound('click');
-              setupPhase2Quiz();
-         });
-
-         document.getElementById('start-phase3-quiz-btn').addEventListener('click', () => {
-              playSound('click');
-              setupPhase3Quiz();
-         });
-
-         restartPhase3Btn.addEventListener('click', () => {
-              playSound('click');
-              setupPhase3Quiz();
-         });
-
+        // --- Event Listeners for Phase Progression (Updated for new phases) ---
+        // Use optional chaining ?. in case elements aren't found
+        document.getElementById('goto-phase-1-btn')?.addEventListener('click', () => { playSound('click'); showPhase(1); });
+        document.getElementById('goto-phase-2-btn')?.addEventListener('click', () => { playSound('click'); showPhase(2); });
+        document.getElementById('goto-phase-3-btn')?.addEventListener('click', () => { playSound('click'); showPhase(3); });
+        document.getElementById('goto-phase-4-btn')?.addEventListener('click', () => { playSound('click'); showPhase(4); });
+        document.getElementById('start-phase5-quiz-btn')?.addEventListener('click', () => { playSound('click'); showPhase(5); setupPhase5Quiz(); });
+        // Phase 5 quiz leads to Phase 6 in nextPhase5Round function
+        document.getElementById('start-phase7-quiz-btn')?.addEventListener('click', () => { playSound('click'); showPhase(7); setupPhase7Quiz(); });
+        restartPhase7Btn?.addEventListener('click', () => { playSound('click'); setupPhase7Quiz(); });
 
         // --- Initial Load ---
-        showPhase(0); // Start at the welcome screen
-        highScoreElement.textContent = highScore; // Show high score if exists
+        if(highScoreElement) highScoreElement.textContent = highScore; // Show high score if exists
+        showPhase(0); // Start at the welcome screen (Phase 0)
 
     </script>
 </body>
