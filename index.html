@@ -19,6 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <button id="theme-toggle" title="Toggle Dark/Light Mode">
@@ -165,33 +166,36 @@
         const docElement = document.documentElement;
         const themeToggle = document.getElementById('theme-toggle');
         const gameContainer = document.getElementById('game-container');
-        // Add emoji spans dynamically
-        gameContainer.querySelectorAll('h1, h2, button, p, li').forEach(el => {
-             el.innerHTML = el.innerHTML
-                 .replace(/🐧/g, '<span class="emoji">🐧</span>')
-                 .replace(/✨/g, '<span class="emoji">✨</span>')
-                 .replace(/👋/g, '<span class="emoji">👋</span>')
-                 .replace(/🚀/g, '<span class="emoji">🚀</span>')
-                 .replace(/📖/g, '<span class="emoji">📖</span>')
-                 .replace(/✏️/g, '<span class="emoji">✏️</span>')
-                 .replace(/▶️/g, '<span class="emoji">▶️</span>')
-                 .replace(/📜/g, '<span class="emoji">📜</span>')
-                 .replace(/🧠/g, '<span class="emoji">🧠</span>')
-                 .replace(/👏/g, '<span class="emoji">👏</span>')
-                 .replace(/🧑‍🤝‍🧑🌍/g, '<span class="emoji">🧑‍🤝‍🧑🌍</span>')
-                 .replace(/👤/g, '<span class="emoji">👤</span>')
-                 .replace(/🤝/g, '<span class="emoji">🤝</span>')
-                 .replace(/🌍/g, '<span class="emoji">🌍</span>')
-                 .replace(/📓/g, '<span class="emoji">📓</span>')
-                 .replace(/📌/g, '<span class="emoji">📌</span>')
-                 .replace(/🛠️/g, '<span class="emoji">🛠️</span>')
-                 .replace(/🎯/g, '<span class="emoji">🎯</span>')
-                 .replace(/🎉/g, '<span class="emoji">🎉</span>')
-                 .replace(/🌟/g, '<span class="emoji">🌟</span>')
-                 .replace(/🤔/g, '<span class="emoji">🤔</span>')
-                 .replace(/⏱️/g, '<span class="emoji">⏱️</span>')
-                 .replace(/🔄/g, '<span class="emoji">🔄</span>')
-                 .replace(/🏆/g, '<span class="emoji">🏆</span>');
+        // Dynamically wrap emojis for potential styling
+        gameContainer.querySelectorAll('h1, h2, button, p, li, span').forEach(el => {
+             // Avoid re-wrapping if already wrapped
+             if (!el.querySelector('.emoji')) {
+                 el.innerHTML = el.innerHTML
+                    .replace(/🐧/g, '<span class="emoji">🐧</span>')
+                    .replace(/✨/g, '<span class="emoji">✨</span>')
+                    .replace(/👋/g, '<span class="emoji">👋</span>')
+                    .replace(/🚀/g, '<span class="emoji">🚀</span>')
+                    .replace(/📖/g, '<span class="emoji">📖</span>')
+                    .replace(/✏️/g, '<span class="emoji">✏️</span>')
+                    .replace(/▶️/g, '<span class="emoji">▶️</span>')
+                    .replace(/📜/g, '<span class="emoji">📜</span>')
+                    .replace(/🧠/g, '<span class="emoji">🧠</span>')
+                    .replace(/👏/g, '<span class="emoji">👏</span>')
+                    .replace(/🧑‍🤝‍🧑🌍/g, '<span class="emoji">🧑‍🤝‍🧑🌍</span>')
+                    .replace(/👤/g, '<span class="emoji">👤</span>')
+                    .replace(/🤝/g, '<span class="emoji">🤝</span>')
+                    .replace(/🌍/g, '<span class="emoji">🌍</span>')
+                    .replace(/📓/g, '<span class="emoji">📓</span>')
+                    .replace(/📌/g, '<span class="emoji">📌</span>')
+                    .replace(/🛠️/g, '<span class="emoji">🛠️</span>')
+                    .replace(/🎯/g, '<span class="emoji">🎯</span>')
+                    .replace(/🎉/g, '<span class="emoji">🎉</span>')
+                    .replace(/🌟/g, '<span class="emoji">🌟</span>')
+                    .replace(/🤔/g, '<span class="emoji">🤔</span>')
+                    .replace(/⏱️/g, '<span class="emoji">⏱️</span>')
+                    .replace(/🔄/g, '<span class="emoji">🔄</span>')
+                    .replace(/🏆/g, '<span class="emoji">🏆</span>');
+             }
         });
 
 
@@ -227,17 +231,15 @@
 
         // --- Sound Generation (Web Audio API) ---
         function initAudio() {
-            // Initialize only once on first user interaction
             if (isAudioInitialized || audioCtx) return;
             try {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                // Play a silent sound to unlock audio context on some browsers/OS
                 const buffer = audioCtx.createBuffer(1, 1, 22050);
                 const source = audioCtx.createBufferSource();
                 source.buffer = buffer;
                 source.connect(audioCtx.destination);
                 source.start(0);
-                isAudioInitialized = true; // Mark as initialized
+                isAudioInitialized = true;
                 console.log("AudioContext Initialized");
             } catch (e) {
                 console.error("Web Audio API is not supported or could not be initialized:", e);
@@ -245,63 +247,97 @@
             }
         }
 
+        function playNote(frequency, startTime, duration, vol = 0.3, type = 'sine') {
+             if (!audioCtx || audioCtx.state !== 'running') return;
+             try {
+                 const oscillator = audioCtx.createOscillator();
+                 const gainNode = audioCtx.createGain();
 
-        function playSound(type) {
-            // Ensure audio is initialized and context is available
-            if (!isAudioInitialized || !audioCtx || audioCtx.state === 'suspended') {
-                 // Optionally try to resume if suspended, might require another user gesture
-                 if(audioCtx && audioCtx.state === 'suspended') {
-                     audioCtx.resume().catch(e => console.error("AudioContext resume failed:", e));
-                 }
-                // console.log("Audio not ready or allowed yet.");
-                return;
-            }
+                 oscillator.type = type;
+                 oscillator.frequency.setValueAtTime(frequency, startTime);
 
-            try {
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
+                 gainNode.gain.setValueAtTime(0, startTime);
+                 gainNode.gain.linearRampToValueAtTime(vol, startTime + 0.01); // Quick attack
+                 gainNode.gain.setValueAtTime(vol, startTime + duration * 0.7); // Sustain briefly
+                 gainNode.gain.linearRampToValueAtTime(0, startTime + duration); // Linear release
 
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
+                 oscillator.connect(gainNode);
+                 gainNode.connect(audioCtx.destination);
 
-                let freq = 440; let duration = 0.15; let vol = 0.3;
-                gainNode.gain.setValueAtTime(0, audioCtx.currentTime); // Start silent
-
-                switch (type) {
-                    case 'correct':
-                        oscillator.type = 'triangle'; freq = 660; duration = 0.2; vol = 0.4;
-                        break;
-                    case 'incorrect':
-                        oscillator.type = 'square'; freq = 220; duration = 0.3; vol = 0.25;
-                        break;
-                    case 'nextPhase':
-                        oscillator.type = 'sine'; freq = 880; duration = 0.1; vol = 0.35;
-                         // Second beep
-                         setTimeout(() => {
-                             if (!audioCtx || audioCtx.state !== 'running') return;
-                             const osc2 = audioCtx.createOscillator(); const gain2 = audioCtx.createGain();
-                             osc2.connect(gain2); gain2.connect(audioCtx.destination); osc2.type = 'sine';
-                             osc2.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
-                             gain2.gain.setValueAtTime(0, audioCtx.currentTime);
-                             gain2.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
-                             gain2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
-                             osc2.start(audioCtx.currentTime); osc2.stop(audioCtx.currentTime + 0.1);
-                         }, 80);
-                        break;
-                    case 'click': default:
-                        oscillator.type = 'sine'; freq = 440; duration = 0.08; vol = 0.2;
-                        break;
-                }
-
-                gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.02); // Quick fade in
-                oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                // Fade out
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
-
-                oscillator.start(audioCtx.currentTime);
-                oscillator.stop(audioCtx.currentTime + duration);
+                 oscillator.start(startTime);
+                 oscillator.stop(startTime + duration);
             } catch (e) {
-                 console.error("Error playing sound:", e);
+                 console.error("Error playing note:", e);
+            }
+        }
+
+         // Function to play sequences of notes
+        function playSequence(notes) {
+             if (!audioCtx || !isAudioInitialized || audioCtx.state !== 'running') return;
+             let currentTime = audioCtx.currentTime;
+             notes.forEach(note => {
+                 // note format: [frequency, delayBeforeStart, duration, volume?, type?]
+                 const freq = note[0];
+                 const delay = note[1];
+                 const dur = note[2];
+                 const vol = note[3] || 0.3;
+                 const type = note[4] || 'triangle'; // Use triangle for cuter default
+                 playNote(freq, currentTime + delay, dur, vol, type);
+             });
+        }
+
+        // Define Note Frequencies (Example: C Major Scale)
+        const Notes = {
+            C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+            C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, B5: 987.77,
+            C6: 1046.50
+        };
+
+        // Sound sequences for game end
+        const endMusicNormal = [
+            // [Frequency, Delay, Duration, Volume, Type]
+            [Notes.G4, 0.0, 0.2, 0.3],
+            [Notes.E4, 0.2, 0.2, 0.3],
+            [Notes.C4, 0.4, 0.3, 0.3] // End on root note
+        ];
+
+        const endMusicHighScore = [
+            // Faster, higher, more notes
+            [Notes.C5, 0.0, 0.15, 0.4, 'sine'],
+            [Notes.E5, 0.15, 0.15, 0.4, 'sine'],
+            [Notes.G5, 0.3, 0.15, 0.4, 'sine'],
+            [Notes.C6, 0.45, 0.25, 0.5, 'triangle'], // Highlight top note
+            // Optional flourish
+            [Notes.G5, 0.7, 0.1, 0.3, 'sine'],
+            [Notes.E5, 0.8, 0.1, 0.3, 'sine'],
+            [Notes.C5, 0.9, 0.15, 0.3, 'sine'],
+        ];
+
+
+        function playSound(type) { // Basic sounds (correct/incorrect/click)
+            if (!audioCtx || !isAudioInitialized || audioCtx.state !== 'running') return;
+            let freq = 440, duration = 0.1, vol = 0.2, oscType = 'sine';
+
+             switch (type) {
+                case 'correct':
+                    freq = 660; duration = 0.15; vol = 0.3; oscType = 'triangle';
+                    break;
+                case 'incorrect':
+                    freq = 220; duration = 0.25; vol = 0.2; oscType = 'square';
+                    break;
+                case 'click': default:
+                    freq = 440; duration = 0.08; vol = 0.15; oscType = 'sine';
+                    break;
+            }
+            // Use playNote for consistency, starting immediately (delay 0)
+            playNote(freq, audioCtx.currentTime, duration, vol, oscType);
+
+             // Keep nextPhase sound separate as it was more complex
+            if (type === 'nextPhase') {
+                 playNote(880, audioCtx.currentTime, 0.1, 0.35, 'sine'); // A5
+                 setTimeout(() => {
+                      playNote(1046.5, audioCtx.currentTime, 0.1, 0.3, 'sine'); // C6
+                 }, 80);
             }
         }
 
@@ -311,305 +347,196 @@
 
         // --- Utility Functions ---
         function showPhase(phaseNum) {
-            if (phaseNum > 0 && phaseNum !== currentPhase) { playSound('nextPhase'); }
+            // Play sound only when *advancing* to a significant new phase
+             if (phaseNum > 0 && phaseNum !== currentPhase && ![2, 4, 6].includes(phaseNum)) { // Avoid sound for cheat sheet/explanations after quizzes
+                playSound('nextPhase');
+             }
             phaseSections.forEach((section, index) => {
-                // Ensure section exists before toggling class
                 if(section) section.classList.toggle('hidden', index !== phaseNum);
-                else console.warn(`Phase section ${index} not found.`);
             });
             currentPhase = phaseNum;
-            // Scroll only if the container exists
             if(gameContainer) gameContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-
-        function octalPartToSymbolic(digit) {
-            let part = '';
-            part += (digit & 4) ? 'r' : '-';
-            part += (digit & 2) ? 'w' : '-';
-            part += (digit & 1) ? 'x' : '-';
-            return part;
+        // ... (octalPartToSymbolic, symbolicPartToOctal, generatePermissions, generateOptions - unchanged) ...
+        function octalPartToSymbolic(digit) { /* ... same ... */
+            let part = ''; part += (digit & 4) ? 'r' : '-'; part += (digit & 2) ? 'w' : '-'; part += (digit & 1) ? 'x' : '-'; return part;
         }
-
-        function symbolicPartToOctal(symbolicPart) {
-            let value = 0;
-            if (!symbolicPart || symbolicPart.length !== 3) return 0; // Basic validation
-            if (symbolicPart[0] === 'r') value += 4;
-            if (symbolicPart[1] === 'w') value += 2;
-            if (symbolicPart[2] === 'x') value += 1;
-            return value;
+        function symbolicPartToOctal(symbolicPart) { /* ... same ... */
+            let value = 0; if (!symbolicPart || symbolicPart.length !== 3) return 0; if (symbolicPart[0] === 'r') value += 4; if (symbolicPart[1] === 'w') value += 2; if (symbolicPart[2] === 'x') value += 1; return value;
         }
-
-        function generatePermissions() {
-            const parts = [
-                Math.floor(Math.random() * 8), // User
-                Math.floor(Math.random() * 8), // Group
-                Math.floor(Math.random() * 8)  // Other
-            ];
-            const symbolic = parts.map(octalPartToSymbolic).join('');
-            const octal = parts.join('');
-            return { symbolic, octal, parts };
+        function generatePermissions() { /* ... same ... */
+            const parts = [ Math.floor(Math.random() * 8), Math.floor(Math.random() * 8), Math.floor(Math.random() * 8) ];
+            const symbolic = parts.map(octalPartToSymbolic).join(''); const octal = parts.join(''); return { symbolic, octal, parts };
         }
-
-        function generateOptions(correctAnswer, numOptions, maxVal) {
+        function generateOptions(correctAnswer, numOptions, maxVal) { /* ... same padding logic ... */
              const options = new Set([correctAnswer.toString()]);
-             let attempts = 0; // Prevent infinite loops
-             while (options.size < numOptions && attempts < 100) {
-                 const randomOption = Math.floor(Math.random() * (maxVal + 1)).toString();
-                 let formattedOption = randomOption;
-                 // Pad 3-digit octal numbers correctly (e.g., 007, 070)
-                 if (maxVal > 7 && typeof correctAnswer === 'string' && correctAnswer.length === 3) {
-                     formattedOption = formattedOption.padStart(3, '0');
-                 } else if (maxVal <=7 && formattedOption.length > 1 && !isNaN(parseInt(formattedOption))) {
-                     // Avoid leading zeros for single digits (0-7)
-                     formattedOption = parseInt(formattedOption).toString();
-                 }
-                 options.add(formattedOption);
-                 attempts++;
+             let attempts = 0; while (options.size < numOptions && attempts < 100) {
+                 const randomOption = Math.floor(Math.random() * (maxVal + 1)).toString(); let formattedOption = randomOption;
+                 if (maxVal > 7 && typeof correctAnswer === 'string' && correctAnswer.length === 3) { formattedOption = formattedOption.padStart(3, '0'); }
+                 else if (maxVal <=7 && formattedOption.length > 1 && !isNaN(parseInt(formattedOption))) { formattedOption = parseInt(formattedOption).toString(); }
+                 options.add(formattedOption); attempts++;
              }
-             // If loop failed to generate enough unique options, fill with placeholders (less ideal)
-             while (options.size < numOptions) {
-                 options.add(`opt${options.size + 1}`);
-             }
+             while (options.size < numOptions) { options.add(`opt${options.size + 1}`); }
              return Array.from(options).sort(() => Math.random() - 0.5);
         }
-
-         function displayFeedback(phaseIndex, isCorrect, correctAnswer) {
-            const feedbackEl = feedbackElements[phaseIndex];
-            if (!feedbackEl) return;
-            // Always make feedback visible first, then set content/class
-            feedbackEl.className = 'feedback visible'; // Make it visible first
+        function displayFeedback(phaseIndex, isCorrect, correctAnswer) { /* ... same ... */
+            const feedbackEl = feedbackElements[phaseIndex]; if (!feedbackEl) return;
+            feedbackEl.className = 'feedback visible';
             if (isCorrect) {
-                feedbackEl.textContent = `Correct! ${['✨', '🎉', '🥳', '👍'][Math.floor(Math.random()*4)]}`;
-                feedbackEl.classList.add('correct');
-                playSound('correct');
+                feedbackEl.textContent = `Correct! ${['✨', '🎉', '🥳', '👍'][Math.floor(Math.random()*4)]}`; feedbackEl.classList.add('correct'); playSound('correct');
             } else {
-                feedbackEl.textContent = `Not quite! The answer was ${correctAnswer} ${['🤔', '😅', '🧐'][Math.floor(Math.random()*3)]}`;
-                 feedbackEl.classList.add('incorrect');
-                playSound('incorrect');
+                feedbackEl.textContent = `Not quite! The answer was ${correctAnswer} ${['🤔', '😅', '🧐'][Math.floor(Math.random()*3)]}`; feedbackEl.classList.add('incorrect'); playSound('incorrect');
             }
         }
-
-        function clearFeedback(phaseIndex) {
-             const feedbackEl = feedbackElements[phaseIndex];
-             if(feedbackEl) {
-                 feedbackEl.textContent = '';
-                 feedbackEl.className = 'feedback'; // Remove visible and color classes
-             }
+        function clearFeedback(phaseIndex) { /* ... same ... */
+             const feedbackEl = feedbackElements[phaseIndex]; if(feedbackEl) { feedbackEl.textContent = ''; feedbackEl.className = 'feedback'; }
+        }
+        function disableOptions(phaseIndex) { /* ... same ... */
+            const container = optionContainers[phaseIndex]; if(container) { container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true); }
         }
 
-        function disableOptions(phaseIndex) {
-            const container = optionContainers[phaseIndex];
-             if(container) {
-                 container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-             } else {
-                 // console.warn(`Option container for phase ${phaseIndex} not found.`);
-             }
-        }
 
         // --- Phase Logic ---
 
         // Phase 5 (Practice UGO) Quiz Logic
-        function setupPhase5Quiz() {
-             phaseRound = 0;
-             if(phaseQuizzes[5]) phaseQuizzes[5].classList.remove('hidden'); // Show quiz container if exists
-             else { console.error("Phase 5 quiz container not found"); return; }
-             nextPhase5Round();
+        function setupPhase5Quiz() { /* ... same ... */
+             phaseRound = 0; if(phaseQuizzes[5]) phaseQuizzes[5].classList.remove('hidden'); else { console.error("Phase 5 quiz container not found"); return; } nextPhase5Round();
         }
-
-        function nextPhase5Round() {
-             phaseRound++;
-             const roundCounterEl = roundCounters[5]; // Index 5 corresponds to phase 5
-             if (phaseRound > maxRoundsPerPhase) {
-                 showPhase(6); // Move to Phase 6 (Final quiz explanation)
-                 return;
-             }
-             if(roundCounterEl) roundCounterEl.textContent = phaseRound;
-             clearFeedback(5); // Index 5 for feedback
-
-             const perms = generatePermissions();
-             const targetGroupIndex = Math.floor(Math.random() * 3);
-             const groupNames = ['User', 'Group', 'Other'];
-             const groupClasses = ['user-color', 'group-color', 'other-color'];
-             const targetGroupName = groupNames[targetGroupIndex];
-             const targetGroupClass = groupClasses[targetGroupIndex];
+        function nextPhase5Round() { /* ... same ... */
+             phaseRound++; const roundCounterEl = roundCounters[5];
+             if (phaseRound > maxRoundsPerPhase) { showPhase(6); return; } // Go to final explanation
+             if(roundCounterEl) roundCounterEl.textContent = phaseRound; clearFeedback(5);
+             const perms = generatePermissions(); const targetGroupIndex = Math.floor(Math.random() * 3);
+             const groupNames = ['User', 'Group', 'Other']; const groupClasses = ['user-color', 'group-color', 'other-color'];
+             const targetGroupName = groupNames[targetGroupIndex]; const targetGroupClass = groupClasses[targetGroupIndex];
              const correctAnswer = perms.parts[targetGroupIndex];
-
              currentQuestionData = { ...perms, answer: correctAnswer, targetGroupIndex };
-
-             // Update prompt with color
-             const targetGroupEl = document.getElementById('phase5-target-group');
-             if (targetGroupEl) {
-                 targetGroupEl.textContent = targetGroupName;
-                 targetGroupEl.className = targetGroupClass; // Apply color class
-             }
-
-             // Display the permission string (Index 5)
-              if (questionElements[5]) {
-                 questionElements[5].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
-              } else { console.error("Phase 5 question element not found"); return; }
-
-             const options = generateOptions(correctAnswer, 4, 7); // Single digit options (0-7)
-
-             // Populate options (Index 5)
-             const optContainer = optionContainers[5];
+             const targetGroupEl = document.getElementById('phase5-target-group'); if (targetGroupEl) { targetGroupEl.textContent = targetGroupName; targetGroupEl.className = targetGroupClass; }
+             if (questionElements[5]) { questionElements[5].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`; } else { console.error("Phase 5 question element not found"); return; }
+             const options = generateOptions(correctAnswer, 4, 7); const optContainer = optionContainers[5];
               if (!optContainer) { console.error("Phase 5 options container not found"); return; }
-             optContainer.innerHTML = '';
-             options.forEach(opt => {
-                 const btn = document.createElement('button');
-                 btn.classList.add('option-btn');
-                 btn.textContent = opt;
-                 btn.dataset.value = opt;
-                 // Add onclick listener to check answer for phase 5
-                 btn.onclick = () => { checkPhase5Answer(opt); };
-                 optContainer.appendChild(btn);
+             optContainer.innerHTML = ''; options.forEach(opt => {
+                 const btn = document.createElement('button'); btn.classList.add('option-btn'); btn.textContent = opt; btn.dataset.value = opt;
+                 btn.onclick = () => { checkPhase5Answer(opt); }; optContainer.appendChild(btn);
              });
         }
-
-         function checkPhase5Answer(selectedValue) {
-             disableOptions(5); // Disable options for phase 5
-             const correct = parseInt(selectedValue) === currentQuestionData.answer;
-             displayFeedback(5, correct, currentQuestionData.answer); // Show feedback for phase 5
-             setTimeout(nextPhase5Round, 1800); // Proceed to next round or phase
+        function checkPhase5Answer(selectedValue) { /* ... same ... */
+             disableOptions(5); const correct = parseInt(selectedValue) === currentQuestionData.answer; displayFeedback(5, correct, currentQuestionData.answer); setTimeout(nextPhase5Round, 1800);
         }
 
          // Phase 7 (Final Timed Quiz) Logic
-         function setupPhase7Quiz() {
-             score = 0; streak = 0; timeLeft = 60;
-             if(highScoreElement) highScoreElement.textContent = highScore;
-             if(scoreElement) scoreElement.textContent = score;
-             if(streakElement) streakElement.textContent = streak;
-             if(timerElement) timerElement.textContent = timeLeft;
-             if(restartPhase7Btn) restartPhase7Btn.classList.add('hidden');
-             clearFeedback(7); // Index 7 for feedback
-             if(phaseQuizzes[7]) phaseQuizzes[7].classList.remove('hidden'); // Show quiz container
-             else { console.error("Phase 7 quiz container not found"); return; }
-
-             nextPhase7Round(); // Display first question
-
-             clearInterval(timerInterval); // Clear any old timers
-             timerInterval = setInterval(updateTimer, 1000);
+         function setupPhase7Quiz() { /* ... same ... */
+             score = 0; streak = 0; timeLeft = 60; if(highScoreElement) highScoreElement.textContent = highScore; if(scoreElement) scoreElement.textContent = score; if(streakElement) streakElement.textContent = streak; if(timerElement) timerElement.textContent = timeLeft; if(restartPhase7Btn) restartPhase7Btn.classList.add('hidden'); clearFeedback(7); if(phaseQuizzes[7]) phaseQuizzes[7].classList.remove('hidden'); else { console.error("Phase 7 quiz container not found"); return; } nextPhase7Round(); clearInterval(timerInterval); timerInterval = setInterval(updateTimer, 1000);
          }
-
-         function nextPhase7Round() {
-            clearFeedback(7); // Index 7
-            if (timeLeft <= 0) return; // Stop if time ran out during feedback delay
-
-             const perms = generatePermissions();
-             currentQuestionData = { ...perms, answer: perms.octal };
-
-             // Display the permission string (Index 7)
-             if (questionElements[7]) {
-                 questionElements[7].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
-             } else { console.error("Phase 7 question element not found"); return; }
-
-             // Ensure generated octal is treated as a 3-digit padded string for comparison/options
-             const correctAnswerStr = perms.octal.toString().padStart(3, '0');
-             currentQuestionData.answer = correctAnswerStr; // Store padded string as answer
-             const options = generateOptions(correctAnswerStr, 4, 777); // Generate 3-digit options
-
-             // Populate options (Index 7)
-             const optContainer = optionContainers[7];
-              if (!optContainer) { console.error("Phase 7 options container not found"); return; }
-             optContainer.innerHTML = '';
-             options.forEach(opt => {
-                 const btn = document.createElement('button');
-                 btn.classList.add('option-btn');
-                 // Ensure options are also displayed padded if needed (generateOptions should handle this)
-                 btn.textContent = opt;
-                 btn.dataset.value = opt;
-                 // Add onclick listener to check answer for phase 7
-                 btn.onclick = () => { checkPhase7Answer(opt); };
-                 optContainer.appendChild(btn);
-             });
+         function nextPhase7Round() { /* ... same ... */
+            clearFeedback(7); if (timeLeft <= 0) return; const perms = generatePermissions(); const correctAnswerStr = perms.octal.toString().padStart(3, '0'); currentQuestionData = { ...perms, answer: correctAnswerStr };
+            if (questionElements[7]) { questionElements[7].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`; } else { console.error("Phase 7 question element not found"); return; }
+            const options = generateOptions(correctAnswerStr, 4, 777); const optContainer = optionContainers[7];
+            if (!optContainer) { console.error("Phase 7 options container not found"); return; }
+            optContainer.innerHTML = ''; options.forEach(opt => {
+                 const btn = document.createElement('button'); btn.classList.add('option-btn'); btn.textContent = opt; btn.dataset.value = opt; btn.onclick = () => { checkPhase7Answer(opt); }; optContainer.appendChild(btn);
+            });
          }
-
-         function checkPhase7Answer(selectedValue) {
-            if (timeLeft <= 0) return; // Prevent answers after time's up
-             disableOptions(7); // Index 7
-             // Compare selected value (string) with the stored padded answer string
-             const correct = selectedValue === currentQuestionData.answer;
-
-             if (correct) { score++; streak++; displayFeedback(7, true); }
-             else { streak = 0; displayFeedback(7, false, currentQuestionData.answer); }
-
-             updateStats();
-             setTimeout(() => { if(timeLeft > 0) nextPhase7Round(); }, 1500);
+         function checkPhase7Answer(selectedValue) { /* ... same ... */
+            if (timeLeft <= 0) return; disableOptions(7); const correct = selectedValue === currentQuestionData.answer;
+            if (correct) { score++; streak++; displayFeedback(7, true); } else { streak = 0; displayFeedback(7, false, currentQuestionData.answer); } updateStats(); setTimeout(() => { if(timeLeft > 0) nextPhase7Round(); }, 1500);
          }
-
-         function updateStats() {
+         function updateStats() { /* ... same logic, just ensure elements exist ... */
             if(scoreElement) scoreElement.textContent = score;
             if(streakElement) streakElement.textContent = streak;
-             if (score > highScore) {
+             // Check for high score *before* potentially updating it in localStorage
+             const isNewHighScore = score > parseInt(highScore); // Compare numbers
+             if (isNewHighScore && score > 0) { // Only update if score is positive
                  highScore = score;
                  localStorage.setItem('linuxPermsHighScoreCute3', highScore);
                  if(highScoreElement) highScoreElement.textContent = highScore;
              }
          }
+         function updateTimer() { /* ... same ... */
+             timeLeft--; if(timerElement) timerElement.textContent = timeLeft; if (timeLeft <= 0) { endPhase7Quiz(); }
+         }
 
-         function updateTimer() {
-            timeLeft--;
-            if(timerElement) timerElement.textContent = timeLeft;
-            if (timeLeft <= 0) {
-                endPhase7Quiz();
-            }
-        }
-
+         // MODIFIED endPhase7Quiz
          function endPhase7Quiz() {
              clearInterval(timerInterval);
              timerInterval = null;
              disableOptions(7); // Index 7
+
+             const isNewHighScore = score > parseInt(localStorage.getItem('linuxPermsHighScoreCute3') || 0) && score > 0;
+             let finalMessage = `Time's up! Final Score: ${score} 🎉`;
+
+             if (isNewHighScore) {
+                 highScore = score; // Update internal high score state
+                 localStorage.setItem('linuxPermsHighScoreCute3', highScore); // Save new high score
+                 if(highScoreElement) highScoreElement.textContent = highScore; // Update display
+                 finalMessage = `Time's up! Final Score: ${score}. New High Score! 🏆`;
+
+                 // Play celebratory music
+                 playSequence(endMusicHighScore);
+
+                 // Trigger confetti - check if confetti function exists from CDN
+                 if (typeof confetti === 'function') {
+                     confetti({
+                         particleCount: 180, // More particles!
+                         spread: 100,       // Wider spread
+                         origin: { y: 0.6 }, // Start lower down
+                         zIndex: 1001        // Ensure it's above elements
+                     });
+                     // Maybe a second burst?
+                     setTimeout(() => confetti({
+                         particleCount: 100,
+                         spread: 120,
+                         origin: { y: 0.5, x: 0.3 },
+                         angle: 60
+                     }), 300);
+                      setTimeout(() => confetti({
+                         particleCount: 100,
+                         spread: 120,
+                         origin: { y: 0.5, x: 0.7 },
+                         angle: 120
+                     }), 450);
+                 } else {
+                     console.warn("Confetti function not found. Ensure CDN script loaded.");
+                 }
+
+             } else {
+                 // Play normal end music
+                 playSequence(endMusicNormal);
+             }
+
              const feedbackEl = feedbackElements[7];
              if (feedbackEl) {
-                 feedbackEl.textContent = `Time's up! Final Score: ${score} ${score > highScore ? 'New High Score! 🏆' : '🎉'}`;
+                 feedbackEl.textContent = finalMessage;
                  feedbackEl.className = 'feedback visible'; // Make it visible, no color class
              }
-             playSound('nextPhase'); // Use phase end sound
+
              if(restartPhase7Btn) restartPhase7Btn.classList.remove('hidden');
          }
 
         // --- Theme Toggling ---
-        function setMode(mode) {
-            if (mode === 'dark') {
-                docElement.classList.add('dark-mode');
-                if(themeToggle) themeToggle.textContent = '🌙'; // Moon emoji
-                localStorage.setItem('theme', 'dark');
-            } else {
-                docElement.classList.remove('dark-mode');
-                 if(themeToggle) themeToggle.textContent = '☀️'; // Sun emoji
-                localStorage.setItem('theme', 'light');
-            }
+        function setMode(mode) { /* ... same ... */
+              if (mode === 'dark') { docElement.classList.add('dark-mode'); if(themeToggle) themeToggle.textContent = '🌙'; localStorage.setItem('theme', 'dark'); }
+              else { docElement.classList.remove('dark-mode'); if(themeToggle) themeToggle.textContent = '☀️'; localStorage.setItem('theme', 'light'); }
         }
-
-        if (themeToggle) {
-             themeToggle.addEventListener('click', () => {
-                 initAudio(); // Ensure audio is ready
-                 playSound('click');
-                 const currentMode = docElement.classList.contains('dark-mode') ? 'dark' : 'light';
-                 setMode(currentMode === 'dark' ? 'light' : 'dark');
-             });
+        if (themeToggle) { /* ... same listener ... */
+             themeToggle.addEventListener('click', () => { initAudio(); playSound('click'); const currentMode = docElement.classList.contains('dark-mode') ? 'dark' : 'light'; setMode(currentMode === 'dark' ? 'light' : 'dark'); });
         }
-
-        // Load saved theme on startup
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Set initial mode based on saved theme or system preference
-        setMode(savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light');
+        const savedTheme = localStorage.getItem('theme'); const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; setMode(savedTheme === 'dark' || (!savedTheme && prefersDark) ? 'dark' : 'light');
 
 
-        // --- Event Listeners for Phase Progression (Updated for new phases) ---
-        // Use optional chaining ?. in case elements aren't found
+        // --- Event Listeners for Phase Progression ---
         document.getElementById('goto-phase-1-btn')?.addEventListener('click', () => { playSound('click'); showPhase(1); });
         document.getElementById('goto-phase-2-btn')?.addEventListener('click', () => { playSound('click'); showPhase(2); });
         document.getElementById('goto-phase-3-btn')?.addEventListener('click', () => { playSound('click'); showPhase(3); });
         document.getElementById('goto-phase-4-btn')?.addEventListener('click', () => { playSound('click'); showPhase(4); });
         document.getElementById('start-phase5-quiz-btn')?.addEventListener('click', () => { playSound('click'); showPhase(5); setupPhase5Quiz(); });
-        // Phase 5 quiz leads to Phase 6 in nextPhase5Round function
+        // Phase 5 leads to 6 automatically
         document.getElementById('start-phase7-quiz-btn')?.addEventListener('click', () => { playSound('click'); showPhase(7); setupPhase7Quiz(); });
         restartPhase7Btn?.addEventListener('click', () => { playSound('click'); setupPhase7Quiz(); });
 
         // --- Initial Load ---
-        if(highScoreElement) highScoreElement.textContent = highScore; // Show high score if exists
-        showPhase(0); // Start at the welcome screen (Phase 0)
+        if(highScoreElement) highScoreElement.textContent = highScore;
+        showPhase(0); // Start at Phase 0
 
     </script>
 </body>
