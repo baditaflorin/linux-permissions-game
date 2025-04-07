@@ -3,348 +3,641 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linux Permissions Quiz</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        #game-container {
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 500px;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        p#instructions {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        #permission-string {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5em; /* Increased size */
-            font-weight: bold;
-            color: #e74c3c;
-            background-color: #ecf0f1;
-            padding: 15px 10px;
-            border-radius: 5px;
-            margin: 25px 0;
-            letter-spacing: 2px; /* Added spacing */
-            display: block; /* Ensure it takes full width */
-            box-sizing: border-box; /* Include padding in width */
-        }
-        #options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .option-btn {
-            padding: 15px 10px;
-            font-size: 1.4em;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            font-family: 'Courier New', Courier, monospace; /* Monospace for numbers */
-            font-weight: bold;
-        }
-        .option-btn:hover {
-            background-color: #2980b9;
-        }
-         .option-btn:active {
-             transform: scale(0.98);
-         }
-        #feedback {
-            margin-top: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            min-height: 1.5em; /* Reserve space */
-        }
-        .correct {
-            color: #2ecc71;
-        }
-        .incorrect {
-            color: #e74c3c;
-        }
-        #stats {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-around;
-            font-size: 1.1em;
-            color: #555;
-            background-color: #f8f9f9;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        #stats span {
-            font-weight: bold;
-            color: #333;
-        }
-        button#start-btn, button#restart-btn {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #2ecc71;
-            color: white;
-            margin-top: 20px;
-            transition: background-color 0.2s ease;
-        }
-         button#start-btn:hover, button#restart-btn:hover {
-             background-color: #27ae60;
-         }
-        .hidden {
-            display: none;
-        }
-
-        /* Blinking effect for feedback */
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-        .feedback-blink {
-            animation: blink 0.5s linear;
-        }
-
-    </style>
+    <title>Super Cute Linux Permissions Tutor 🐧✨</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="game-container">
-        <h1>Linux Permissions Quiz!</h1>
-        <p id="instructions">
-            Match the symbolic permission (like <code>rwxr-x---</code>) to its 3-digit octal number (like <code>750</code>). Remember: r=4, w=2, x=1. Add them up for each section (user, group, other).
-            <br><strong>Example:</strong> <code>-rw-r--r--</code> is User(rw- = 4+2=6), Group(r-- = 4), Other(r-- = 4) -> <strong>644</strong>.
-        </p>
+    <button id="theme-toggle" title="Toggle Dark/Light Mode">☀️</button>
 
-        <div id="game-area" class="hidden">
-            <div id="permission-string">--- --- ---</div>
-            <div id="options">
-                <button class="option-btn" data-value="000">000</button>
-                <button class="option-btn" data-value="000">000</button>
-                <button class="option-btn" data-value="000">000</button>
-                <button class="option-btn" data-value="000">000</button>
+    <div id="game-container">
+        <h1>Linux Permissions Fun! <span class="penguin"></span></h1>
+
+        <div id="phase-0" class="phase-section">
+            <p>Hello friend! <span class="wave">👋</span> Let's learn the secrets of Linux permissions together! It's easier than you think!</p>
+            <button id="start-learning-btn" class="action-btn">Let's Go! <span class="rocket"></span></button>
+        </div>
+
+        <div id="phase-1" class="phase-section hidden">
+            <h2>Part 1: Magic Numbers! <span class="sparkles"></span></h2>
+            <div class="explanation-section">
+                <p>Linux uses little codes to protect files. The main ones are:</p>
+                <ul>
+                    <li><code>r</code> = <strong>Read</strong> (like opening a book 📖)</li>
+                    <li><code>w</code> = <strong>Write</strong> (like using a pencil ✏️)</li>
+                    <li><code>x</code> = <strong>Execute</strong> (like pressing a play button ▶️)</li>
+                </ul>
+                <p>Each has a secret number value:</p>
+                <ul>
+                    <li><code>r</code> = <strong>4</strong></li>
+                    <li><code>w</code> = <strong>2</strong></li>
+                    <li><code>x</code> = <strong>1</strong></li>
+                </ul>
+                <p>If a permission is missing (<code>-</code>), its value is <strong>0</strong>.</p>
+                <p>We <strong>add these numbers up</strong> for any group of three! <br>
+                   Example: <code>rw-</code> = <code>r(4)</code> + <code>w(2)</code> + <code>-(0)</code> = <strong>6</strong>.<br>
+                   Example: <code>r-x</code> = <code>r(4)</code> + <code>-(0)</code> + <code>x(1)</code> = <strong>5</strong>.
+                </p>
+                <p>Ready to check your understanding?</p>
             </div>
-            <div id="feedback">&nbsp;</div>
-            <div id="stats">
-                <div>Score: <span id="score">0</span></div>
-                <div>Streak: <span id="streak">0</span></div>
-                <div>Time Left: <span id="timer">60</span>s</div>
-                <div>High Score: <span id="high-score">0</span></div>
+            <button id="goto-cheat-sheet-btn" class="action-btn">Show me all combos! <span class="book"></span></button>
+        </div>
+
+        <div id="phase-cheat-sheet" class="phase-section hidden">
+             <h2>The Permission Cheat Sheet! <span class="book"></span></h2>
+             <div id="cheat-sheet-section">
+                 <p>Here are all the possible combinations for one group (like User, Group, or Other) and their magic numbers:</p>
+                 <ul>
+                     <li><code>---</code> (0+0+0) = <strong>0</strong> (No permissions)</li>
+                     <li><code>--x</code> (0+0+1) = <strong>1</strong> (Execute only)</li>
+                     <li><code>-w-</code> (0+2+0) = <strong>2</strong> (Write only)</li>
+                     <li><code>-wx</code> (0+2+1) = <strong>3</strong> (Write & Execute)</li>
+                     <li><code>r--</code> (4+0+0) = <strong>4</strong> (Read only)</li>
+                     <li><code>r-x</code> (4+0+1) = <strong>5</strong> (Read & Execute)</li>
+                     <li><code>rw-</code> (4+2+0) = <strong>6</strong> (Read & Write)</li>
+                     <li><code>rwx</code> (4+2+1) = <strong>7</strong> (Read, Write & Execute - Full!)</li>
+                 </ul>
+                 <p>Keep these in mind! <span class="brain"></span></p>
+             </div>
+             <button id="start-phase1-quiz-btn" class="action-btn">Okay, Quiz Me! <span class="clap"></span></button>
+
+             <div id="phase1-quiz" class="hidden">
+                 <p>What's the magic number for this permission set?</p>
+                 <div id="phase1-question" class="permission-string-display">rwx</div>
+                 <div id="phase1-options" class="options-grid"></div>
+                 <div id="phase1-feedback" class="feedback"></div>
+                 <p>Round: <span id="phase1-round">1</span> / 5</p>
+             </div>
+        </div>
+
+
+        <div id="phase-2" class="phase-section hidden">
+             <h2>Part 2: Meet the Crew! <span class="users">🧑‍🤝‍🧑🌍</span></h2>
+             <div class="explanation-section">
+                <p>Awesome! <span class="clap"></span> Now, permissions apply to <strong>three groups</strong>:</p>
+                <ul>
+                    <li><strong>U</strong>ser (You, the owner! <span class="user-icon">👤</span>)</li>
+                    <li><strong>G</strong>roup (Your team! <span class="group-icon">👥</span>)</li>
+                    <li><strong>O</strong>ther (Everyone else! <span class="other-icon">🌍</span>)</li>
+                </ul>
+                <p>A full permission string shows codes for all three, like <code>rwx r-x r--</code>.</p>
+                <p>We calculate the magic number (0-7 from our cheat sheet!) for <strong>each group separately</strong>:</p>
+                <p><code><span style="color: #e74c3c;">rwx</span>&nbsp;<span style="color: #3498db;">r-x</span>&nbsp;<span style="color: #2ecc71;">r--</span></code></p>
+                <ul>
+                    <li>User (<code>rwx</code>) = <strong>7</strong></li>
+                    <li>Group (<code>r-x</code>) = <strong>5</strong></li>
+                    <li>Other (<code>r--</code>) = <strong>4</strong></li>
+                </ul>
+                <p>Because each number is 0-7, this system is called <strong>Octal</strong>! Fancy name, simple idea. Let's practice finding the number for just one group.</p>
+            </div>
+             <button id="start-phase2-quiz-btn" class="action-btn">Practice Time! <span class="brain"></span></button>
+
+            <div id="phase2-quiz" class="hidden">
+                 <p>What's the number for the <strong id="phase2-target-group" style="color: var(--accent-color);">User</strong> group in:</p>
+                 <div id="phase2-question" class="permission-string-display">rwx rwx rwx</div>
+                 <div id="phase2-options" class="options-grid"></div>
+                 <div id="phase2-feedback" class="feedback"></div>
+                 <p>Round: <span id="phase2-round">1</span> / 5</p>
             </div>
         </div>
 
-        <button id="start-btn">Start Game</button>
-        <button id="restart-btn" class="hidden">Play Again?</button>
+        <div id="phase-3" class="phase-section hidden">
+             <h2>Part 3: The Grand Finale! <span class="rocket"></span></h2>
+             <div class="explanation-section">
+                 <p>You're doing fantastic! <span class="party"></span> Let's put it ALL together.</p>
+                 <p>Just line up the numbers for User, Group, and Other!</p>
+                 <p>Example: <code>-rw- r-- ---</code></p>
+                 <ul>
+                     <li>User (<code>rw-</code>) = <strong>6</strong></li>
+                     <li>Group (<code>r--</code>) = <strong>4</strong></li>
+                     <li>Other (<code>---</code>) = <strong>0</strong></li>
+                 </ul>
+                 <p>The final Octal code is... <strong><code>640</code></strong>! Easy peasy!</p>
+                 <p>Ready for the timed challenge? Match the full string to its 3-digit code. Good luck! <span class="star">🌟</span></p>
+            </div>
+             <button id="start-phase3-quiz-btn" class="action-btn">Start Timed Quiz!</button>
+
+            <div id="phase3-quiz" class="hidden">
+                 <p>Quick! What's the 3-digit Octal code?</p>
+                 <div id="phase3-question" class="permission-string-display">rwx rwx rwx</div>
+                 <div id="phase3-options" class="options-grid"></div>
+                 <div id="phase3-feedback" class="feedback"></div>
+                 <div id="stats">
+                    <div>Score: <span id="score">0</span></div>
+                    <div>Streak: <span id="streak">0</span></div>
+                    <div>Time: <span id="timer">60</span>s</div>
+                    <div>High Score: <span id="high-score">0</span></div>
+                </div>
+                 <button id="restart-phase3-btn" class="action-btn hidden">Play Again? <span class="refresh">🔄</span></button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        const permissionStringElement = document.getElementById('permission-string');
-        const optionsContainer = document.getElementById('options');
-        const optionButtons = optionsContainer.querySelectorAll('.option-btn');
-        const feedbackElement = document.getElementById('feedback');
+        // --- DOM Elements ---
+        const docElement = document.documentElement; // Get <html> element for class toggling
+        const themeToggle = document.getElementById('theme-toggle');
+        const gameContainer = document.getElementById('game-container');
+        // Add emoji spans if you want to target them specifically
+        gameContainer.querySelectorAll('h1, h2, button, p').forEach(el => {
+             el.innerHTML = el.innerHTML
+                 .replace('🐧', '<span class="emoji">🐧</span>')
+                 .replace('✨', '<span class="emoji">✨</span>')
+                 .replace('👋', '<span class="emoji">👋</span>')
+                 .replace('🚀', '<span class="emoji">🚀</span>')
+                 .replace('📖', '<span class="emoji">📖</span>')
+                 .replace('✏️', '<span class="emoji">✏️</span>')
+                 .replace('▶️', '<span class="emoji">▶️</span>')
+                 .replace('📜', '<span class="emoji">📜</span>')
+                 .replace('🧠', '<span class="emoji">🧠</span>')
+                 .replace('👏', '<span class="emoji">👏</span>')
+                 .replace('🧑‍🤝‍🧑🌍', '<span class="emoji">🧑‍🤝‍🧑🌍</span>')
+                 .replace('👤', '<span class="emoji">👤</span>')
+                 .replace('👥', '<span class="emoji">👥</span>')
+                 .replace('🌍', '<span class="emoji">🌍</span>')
+                 .replace('🎉', '<span class="emoji">🎉</span>')
+                 .replace('🌟', '<span class="emoji">🌟</span>')
+                 .replace('🤔', '<span class="emoji">🤔</span>')
+                 .replace('🔄', '<span class="emoji">🔄</span>');
+
+        });
+
+
+        const phaseSections = [
+            document.getElementById('phase-0'),
+            document.getElementById('phase-1'),
+            document.getElementById('phase-cheat-sheet'), // Added cheat sheet phase
+            document.getElementById('phase-2'),
+            document.getElementById('phase-3')
+        ];
+        const phaseQuizzes = [
+            null,
+            document.getElementById('phase1-quiz'),
+            null, // No quiz for cheat sheet
+            document.getElementById('phase2-quiz'),
+            document.getElementById('phase3-quiz')
+        ];
+        const feedbackElements = [
+            null,
+            document.getElementById('phase1-feedback'),
+            null,
+            document.getElementById('phase2-feedback'),
+            document.getElementById('phase3-feedback')
+        ];
+        const optionContainers = [
+             null,
+             document.getElementById('phase1-options'),
+             null,
+             document.getElementById('phase2-options'),
+             document.getElementById('phase3-options')
+        ];
+        const questionElements = [
+            null,
+            document.getElementById('phase1-question'),
+            null,
+            document.getElementById('phase2-question'),
+            document.getElementById('phase3-question')
+        ];
+        const roundCounters = [
+            null,
+            document.getElementById('phase1-round'),
+            null,
+            document.getElementById('phase2-round'),
+        ];
+
+        // Phase 3 specific elements
         const scoreElement = document.getElementById('score');
         const streakElement = document.getElementById('streak');
         const timerElement = document.getElementById('timer');
         const highScoreElement = document.getElementById('high-score');
-        const startBtn = document.getElementById('start-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const gameArea = document.getElementById('game-area');
-        const instructionsElement = document.getElementById('instructions');
+        const restartPhase3Btn = document.getElementById('restart-phase3-btn');
 
-        const GAME_TIME = 60; // seconds
+        // --- Game State ---
+        let currentPhase = 0;
+        let phaseRound = 0;
+        const maxRoundsPerPhase = 5;
+        let currentQuestionData = {};
         let score = 0;
         let streak = 0;
-        let timeLeft = GAME_TIME;
         let timerInterval = null;
-        let currentCorrectOctal = '';
-        let highScore = localStorage.getItem('linuxPermsHighScore') || 0;
+        let timeLeft = 60;
+        let highScore = localStorage.getItem('linuxPermsHighScoreCute2') || 0; // Updated key for new version
+        let audioCtx = null; // Audio Context for sounds
 
-        // --- Core Logic ---
-
-        function generateRandomPermissions() {
-            let symbolic = '';
-            let octal = '';
-
-            for (let i = 0; i < 3; i++) { // User, Group, Other
-                const randomDigit = Math.floor(Math.random() * 8); // 0-7
-                octal += randomDigit;
-                symbolic += octalToSymbolicPart(randomDigit);
+        // --- Sound Generation (Web Audio API) ---
+        function initAudio() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.error("Web Audio API is not supported in this browser");
+                }
             }
-            return { symbolic, octal };
         }
 
-        function octalToSymbolicPart(digit) {
+        function playSound(type) {
+            if (!audioCtx) return; // Do nothing if audio context failed
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            let freq = 440; // Default A4
+            let duration = 0.15;
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime); // Start silent
+            gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.02); // Quick fade in
+
+            switch (type) {
+                case 'correct':
+                    oscillator.type = 'triangle';
+                    freq = 660; // Higher pitch (E5)
+                    duration = 0.2;
+                    gainNode.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.03); // Slightly louder
+                    break;
+                case 'incorrect':
+                    oscillator.type = 'square';
+                    freq = 220; // Lower pitch (A3)
+                    duration = 0.3;
+                    gainNode.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 0.04);
+                    break;
+                case 'nextPhase':
+                     oscillator.type = 'sine';
+                     freq = 880; // Even higher (A5)
+                     duration = 0.1;
+                     gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.01);
+                     // Add a second quick beep?
+                     setTimeout(() => {
+                         const osc2 = audioCtx.createOscillator();
+                         const gain2 = audioCtx.createGain();
+                         osc2.connect(gain2);
+                         gain2.connect(audioCtx.destination);
+                         osc2.type = 'sine';
+                         osc2.frequency.setValueAtTime(1046.5, audioCtx.currentTime); // C6
+                         gain2.gain.setValueAtTime(0, audioCtx.currentTime);
+                         gain2.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
+                         gain2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+                         osc2.start(audioCtx.currentTime);
+                         osc2.stop(audioCtx.currentTime + 0.1);
+                     }, 80); // Delay second beep slightly
+                    break;
+                case 'click': // Simple click sound
+                default:
+                    oscillator.type = 'sine';
+                    freq = 440;
+                    duration = 0.08;
+                     gainNode.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+                    break;
+            }
+
+            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            // Fade out
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + duration);
+        }
+
+
+        // --- Utility Functions (Keep as before, but add calls to playSound) ---
+         function showPhase(phaseNum) {
+            // Add sound for moving to a new phase (except phase 0)
+            if (phaseNum > 0 && phaseNum !== currentPhase) {
+                playSound('nextPhase');
+            }
+            phaseSections.forEach((section, index) => {
+                section.classList.toggle('hidden', index !== phaseNum);
+            });
+            currentPhase = phaseNum;
+            // Scroll to top of container smoothly
+             gameContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function octalPartToSymbolic(digit) { /* ... same as before ... */
             let part = '';
-            part += (digit & 4) ? 'r' : '-'; // Check read bit (4)
-            part += (digit & 2) ? 'w' : '-'; // Check write bit (2)
-            part += (digit & 1) ? 'x' : '-'; // Check execute bit (1)
+            part += (digit & 4) ? 'r' : '-';
+            part += (digit & 2) ? 'w' : '-';
+            part += (digit & 1) ? 'x' : '-';
             return part;
+         }
+        function symbolicPartToOctal(symbolicPart) { /* ... same as before ... */
+            let value = 0;
+            if (symbolicPart[0] === 'r') value += 4;
+            if (symbolicPart[1] === 'w') value += 2;
+            if (symbolicPart[2] === 'x') value += 1;
+            return value;
+        }
+        function generatePermissions() { /* ... same as before ... */
+            const parts = [
+                Math.floor(Math.random() * 8), // User
+                Math.floor(Math.random() * 8), // Group
+                Math.floor(Math.random() * 8)  // Other
+            ];
+            const symbolic = parts.map(octalPartToSymbolic).join('');
+            const octal = parts.join('');
+            return { symbolic, octal, parts };
+        }
+        function generateOptions(correctAnswer, numOptions, maxVal) { /* ... same as before ... */
+             const options = new Set([correctAnswer.toString()]);
+             while (options.size < numOptions) {
+                 const randomOption = Math.floor(Math.random() * (maxVal + 1)).toString();
+                 // For phase 3 (3-digit), ensure correct padding if needed (rare)
+                 let formattedOption = randomOption;
+                 if (maxVal > 7 && formattedOption.length < 3) {
+                      formattedOption = formattedOption.padStart(3, '0');
+                 } else if (maxVal <=7 && formattedOption.length > 1 && !isNaN(parseInt(formattedOption))) {
+                     // Avoid leading zeros for single digits if accidentally generated
+                     formattedOption = parseInt(formattedOption).toString();
+                 }
+
+                 options.add(formattedOption);
+             }
+             return Array.from(options).sort(() => Math.random() - 0.5);
         }
 
-        function generateDistractors(correctOctal) {
-            const distractors = new Set();
-            distractors.add(correctOctal); // Add correct answer first
+         function displayFeedback(phase, isCorrect, correctAnswer) {
+            const feedbackEl = feedbackElements[phase];
+            if (!feedbackEl) return;
 
-            while (distractors.size < 4) {
-                let distractor = '';
-                for (let i = 0; i < 3; i++) {
-                    distractor += Math.floor(Math.random() * 8);
-                }
-                // Ensure it's a valid 3-digit octal string and not already present
-                if (distractor.length === 3 && !distractors.has(distractor)) {
-                    distractors.add(distractor);
-                }
+            if (isCorrect) {
+                feedbackEl.textContent = `Correct! ${['✨', '🎉', '🥳', '👍'][Math.floor(Math.random()*4)]}`; // Random positive emoji
+                feedbackEl.className = 'feedback correct visible';
+                playSound('correct'); // Play sound
+            } else {
+                feedbackEl.textContent = `Not quite! The answer was ${correctAnswer} ${['🤔', '😅', '🧐'][Math.floor(Math.random()*3)]}`;
+                feedbackEl.className = 'feedback incorrect visible';
+                playSound('incorrect'); // Play sound
             }
-            // Convert Set to array and shuffle
-            return Array.from(distractors).sort(() => Math.random() - 0.5);
+            // Keep visible until next question clears it
         }
 
+        function clearFeedback(phase) {
+             const feedbackEl = feedbackElements[phase];
+             if(feedbackEl) {
+                 feedbackEl.textContent = '';
+                 feedbackEl.className = 'feedback'; // Remove visible and color classes
+             }
+        }
 
-        function displayQuestion() {
-            feedbackElement.textContent = '\u00A0'; // Clear feedback (using non-breaking space)
-            feedbackElement.className = ''; // Reset feedback class
+        function disableOptions(phase) { /* ... same as before ... */
+            const container = optionContainers[phase];
+             if(container) {
+                 container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+             }
+        }
 
-            const { symbolic, octal } = generateRandomPermissions();
-            currentCorrectOctal = octal;
+        // --- Phase Logic (Updated for sounds and cheat sheet) ---
 
-            // Format symbolic string for better readability
-            const formattedSymbolic = `${symbolic.substring(0,3)} ${symbolic.substring(3,6)} ${symbolic.substring(6,9)}`;
-            permissionStringElement.textContent = formattedSymbolic;
+        function setupPhase1Quiz() {
+            phaseRound = 0;
+            phaseQuizzes[1].classList.remove('hidden'); // Show quiz section
+            document.getElementById('start-phase1-quiz-btn').classList.add('hidden'); // Hide button
+            nextPhase1Round();
+        }
 
+        function nextPhase1Round() {
+            phaseRound++;
+            if (phaseRound > maxRoundsPerPhase) {
+                 phaseQuizzes[1].classList.add('hidden'); // Hide quiz
+                 showPhase(3); // Move to Phase 2 (UGO explanation, index 3)
+                 return;
+            }
+            roundCounters[1].textContent = phaseRound;
+            clearFeedback(1);
 
-            const options = generateDistractors(octal);
+            const partValue = Math.floor(Math.random() * 8);
+            const symbolicPart = octalPartToSymbolic(partValue);
+            currentQuestionData = { symbolic: symbolicPart, answer: partValue };
 
-            optionButtons.forEach((button, index) => {
-                button.textContent = options[index];
-                button.dataset.value = options[index];
-                button.disabled = false; // Ensure buttons are enabled
-                button.style.backgroundColor = '#3498db'; // Reset color
+            questionElements[1].textContent = symbolicPart;
+            const options = generateOptions(partValue, 4, 7);
+
+            optionContainers[1].innerHTML = ''; // Clear previous options
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.textContent = opt;
+                btn.dataset.value = opt;
+                btn.onclick = () => { initAudio(); checkPhase1Answer(opt); }; // Init audio on click
+                optionContainers[1].appendChild(btn);
             });
         }
 
-        function checkAnswer(event) {
-            if (!event.target.classList.contains('option-btn')) return; // Ignore clicks outside buttons
-
-            const selectedOctal = event.target.dataset.value;
-            disableOptions(); // Prevent double clicks
-
-            if (selectedOctal === currentCorrectOctal) {
-                score++;
-                streak++;
-                feedbackElement.textContent = 'Correct!';
-                feedbackElement.className = 'correct feedback-blink';
-                event.target.style.backgroundColor = '#2ecc71'; // Highlight correct button green
-            } else {
-                streak = 0;
-                feedbackElement.textContent = `Incorrect! It was ${currentCorrectOctal}`;
-                feedbackElement.className = 'incorrect feedback-blink';
-                event.target.style.backgroundColor = '#e74c3c'; // Highlight wrong button red
-
-                 // Also highlight the actual correct button
-                optionButtons.forEach(btn => {
-                    if (btn.dataset.value === currentCorrectOctal) {
-                         btn.style.backgroundColor = '#2ecc71';
-                         btn.style.opacity = '0.7'; // Slightly dim correct one if missed
-                    } else if (btn !== event.target) {
-                         btn.style.opacity = '0.5'; // Dim other incorrect options
-                    }
-                });
-            }
-
-            updateStats();
-
-            // Add a short delay before the next question
-            setTimeout(() => {
-                 if (timeLeft > 0) {
-                    displayQuestion();
-                 }
-                 // Re-enable opacity if needed (though displayQuestion resets styles anyway)
-                 optionButtons.forEach(btn => btn.style.opacity = '1');
-            }, 1200); // 1.2 second delay
+        function checkPhase1Answer(selectedValue) {
+             disableOptions(1);
+             const correct = parseInt(selectedValue) === currentQuestionData.answer;
+             displayFeedback(1, correct, currentQuestionData.answer);
+             setTimeout(nextPhase1Round, 1800); // Increased delay for sound/reading feedback
         }
 
-        function disableOptions() {
-            optionButtons.forEach(button => button.disabled = true);
+        function setupPhase2Quiz() {
+             phaseRound = 0;
+             phaseQuizzes[3].classList.remove('hidden');
+             document.getElementById('start-phase2-quiz-btn').classList.add('hidden');
+             nextPhase2Round();
         }
 
-        function updateStats() {
+        function nextPhase2Round() {
+             phaseRound++;
+             if (phaseRound > maxRoundsPerPhase) {
+                 phaseQuizzes[3].classList.add('hidden');
+                 showPhase(4); // Move to Phase 3 (Final quiz explanation, index 4)
+                 return;
+             }
+             // Assuming phase index for round counter is 3
+             if(roundCounters[3]) roundCounters[3].textContent = phaseRound;
+             clearFeedback(3); // Assuming feedback index is 3
+
+
+             const perms = generatePermissions();
+             const targetGroupIndex = Math.floor(Math.random() * 3);
+             const targetGroupName = ['User', 'Group', 'Other'][targetGroupIndex];
+             const correctAnswer = perms.parts[targetGroupIndex];
+
+             currentQuestionData = { ...perms, answer: correctAnswer, targetGroupIndex };
+
+             document.getElementById('phase2-target-group').textContent = targetGroupName;
+             questionElements[3].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+
+             const options = generateOptions(correctAnswer, 4, 7);
+
+             optionContainers[3].innerHTML = '';
+             options.forEach(opt => {
+                 const btn = document.createElement('button');
+                 btn.classList.add('option-btn');
+                 btn.textContent = opt;
+                 btn.dataset.value = opt;
+                 btn.onclick = () => { initAudio(); checkPhase2Answer(opt); }; // Init audio on click
+                 optionContainers[3].appendChild(btn);
+             });
+        }
+
+         function checkPhase2Answer(selectedValue) {
+             disableOptions(3); // Assuming options index 3
+             const correct = parseInt(selectedValue) === currentQuestionData.answer;
+             displayFeedback(3, correct, currentQuestionData.answer); // Assuming feedback index 3
+             setTimeout(nextPhase2Round, 1800);
+        }
+
+         function setupPhase3Quiz() {
+             score = 0;
+             streak = 0;
+             timeLeft = 60;
+             highScoreElement.textContent = highScore;
+             scoreElement.textContent = score;
+             streakElement.textContent = streak;
+             timerElement.textContent = timeLeft;
+             restartPhase3Btn.classList.add('hidden');
+             clearFeedback(4); // Assuming feedback index 4
+             phaseQuizzes[4].classList.remove('hidden');
+             document.getElementById('start-phase3-quiz-btn').classList.add('hidden');
+
+
+             nextPhase3Round(); // Display first question
+
+             clearInterval(timerInterval); // Clear any old timers
+             timerInterval = setInterval(updateTimer, 1000);
+         }
+
+         function nextPhase3Round() {
+            clearFeedback(4); // Clear feedback for the new question
+            if (timeLeft <= 0) return; // Stop if time ran out during feedback delay
+
+
+             const perms = generatePermissions();
+             currentQuestionData = { ...perms, answer: perms.octal };
+
+             questionElements[4].textContent = `${perms.symbolic.substring(0,3)} ${perms.symbolic.substring(3,6)} ${perms.symbolic.substring(6,9)}`;
+
+             // Ensure generated octal is treated as a string for comparison
+             const options = generateOptions(perms.octal.toString(), 4, 777);
+
+             optionContainers[4].innerHTML = ''; // Clear previous options
+             options.forEach(opt => {
+                 const btn = document.createElement('button');
+                 btn.classList.add('option-btn');
+                 btn.textContent = opt; // Keep as string
+                 btn.dataset.value = opt;
+                 btn.onclick = () => { initAudio(); checkPhase3Answer(opt); }; // Init audio on click
+                 optionContainers[4].appendChild(btn);
+             });
+         }
+
+         function checkPhase3Answer(selectedValue) {
+            if (timeLeft <= 0) return; // Prevent answers after time's up
+
+             disableOptions(4);
+             const correct = selectedValue === currentQuestionData.answer.toString();
+
+             if (correct) {
+                 score++;
+                 streak++;
+                 displayFeedback(4, true);
+             } else {
+                 streak = 0;
+                 displayFeedback(4, false, currentQuestionData.answer);
+             }
+
+             updateStats();
+             setTimeout(() => {
+                 if(timeLeft > 0) nextPhase3Round();
+             }, 1500); // Slightly longer delay for timed quiz feedback
+         }
+
+         function updateStats() { /* ... same as before ... */
             scoreElement.textContent = score;
             streakElement.textContent = streak;
             if (score > highScore) {
                 highScore = score;
-                localStorage.setItem('linuxPermsHighScore', highScore);
+                localStorage.setItem('linuxPermsHighScoreCute2', highScore);
                 highScoreElement.textContent = highScore;
             }
-        }
+         }
 
         function updateTimer() {
             timeLeft--;
             timerElement.textContent = timeLeft;
             if (timeLeft <= 0) {
-                endGame();
+                endPhase3Quiz();
             }
         }
 
-        function startGame() {
-            score = 0;
-            streak = 0;
-            timeLeft = GAME_TIME;
-            timerElement.textContent = timeLeft;
-            highScoreElement.textContent = highScore; // Load high score display
+         function endPhase3Quiz() {
+             clearInterval(timerInterval);
+             timerInterval = null;
+             disableOptions(4);
+             feedbackElements[4].textContent = `Time's up! Final Score: ${score} ${score > highScore ? 'New High Score! 🏆' : '🎉'}`;
+             feedbackElements[4].className = 'feedback visible'; // Make it visible, no color class
+             playSound('nextPhase'); // Use phase end sound
+             restartPhase3Btn.classList.remove('hidden');
+         }
 
-            startBtn.classList.add('hidden');
-            restartBtn.classList.add('hidden');
-            gameArea.classList.remove('hidden');
-            instructionsElement.classList.add('hidden'); // Hide instructions during game
-
-            displayQuestion();
-            updateStats(); // Initial display
-
-            clearInterval(timerInterval); // Clear any existing interval
-            timerInterval = setInterval(updateTimer, 1000);
-            optionsContainer.addEventListener('click', checkAnswer); // Add listener only when game starts
+        // --- Theme Toggling ---
+        function setMode(mode) {
+            if (mode === 'dark') {
+                docElement.classList.add('dark-mode');
+                themeToggle.textContent = '🌙'; // Moon emoji
+                localStorage.setItem('theme', 'dark');
+            } else {
+                docElement.classList.remove('dark-mode');
+                themeToggle.textContent = '☀️'; // Sun emoji
+                localStorage.setItem('theme', 'light');
+            }
         }
 
-        function endGame() {
-            clearInterval(timerInterval);
-            timerInterval = null; // Important to nullify
-            optionsContainer.removeEventListener('click', checkAnswer); // Remove listener
+        themeToggle.addEventListener('click', () => {
+            initAudio(); // Init audio context on first interaction
+            playSound('click'); // Play click sound
+            const currentMode = docElement.classList.contains('dark-mode') ? 'dark' : 'light';
+            setMode(currentMode === 'dark' ? 'light' : 'dark');
+        });
 
-            disableOptions(); // Disable buttons at end
-
-            feedbackElement.textContent = `Time's up! Final Score: ${score}`;
-            feedbackElement.className = ''; // Reset color
-            permissionStringElement.textContent = "Game Over";
+        // Load saved theme on startup
+        const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light
+        setMode(savedTheme);
 
 
-            restartBtn.classList.remove('hidden');
-        }
+        // --- Event Listeners for Phase Progression ---
+        document.getElementById('start-learning-btn').addEventListener('click', () => {
+            initAudio(); // Init on first real interaction
+            playSound('click');
+            showPhase(1);
+        });
 
-        // --- Event Listeners ---
-        startBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
+        document.getElementById('goto-cheat-sheet-btn').addEventListener('click', () => {
+             playSound('click');
+             showPhase(2); // Show Cheat Sheet (index 2)
+        });
 
-        // --- Initial Setup ---
-        highScoreElement.textContent = highScore; // Show high score initially
+         document.getElementById('start-phase1-quiz-btn').addEventListener('click', () => {
+              playSound('click');
+              // Function called within the button itself now
+              setupPhase1Quiz();
+         });
+
+         document.getElementById('start-phase2-quiz-btn').addEventListener('click', () => {
+              playSound('click');
+              setupPhase2Quiz();
+         });
+
+         document.getElementById('start-phase3-quiz-btn').addEventListener('click', () => {
+              playSound('click');
+              setupPhase3Quiz();
+         });
+
+         restartPhase3Btn.addEventListener('click', () => {
+              playSound('click');
+              setupPhase3Quiz();
+         });
+
+
+        // --- Initial Load ---
+        showPhase(0); // Start at the welcome screen
+        highScoreElement.textContent = highScore; // Show high score if exists
 
     </script>
 </body>
