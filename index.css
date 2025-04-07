@@ -1,0 +1,354 @@
+/* index.css */
+
+/* Define color palettes using CSS Variables */
+:root {
+    --font-family: 'Nunito', sans-serif;
+    --font-mono: 'Menlo', 'Consolas', 'Courier New', Courier, monospace;
+
+    /* Light Mode (Default) */
+    --bg-color: #f0f8ff; /* Alice Blue */
+    --container-bg: #ffffff;
+    --container-shadow: rgba(0, 0, 0, 0.08);
+    --text-color: #333a40;
+    --light-text: #5f6c7b;
+    --heading-color: #4a90e2; /* Primary Blue */
+    --subheading-color: #50e3c2; /* Tealish Green */
+    --accent-color: #f5a623; /* Orange */
+    --link-color: #4a90e2;
+    --code-bg: #ecf0f1; /* Light Grey */
+    --code-text: #d6336c; /* Pinkish code */
+    --button-bg: #4a90e2;
+    --button-text: #ffffff;
+    --button-hover-bg: #3a7bc8;
+    --action-button-bg: #50e3c2;
+    --action-button-hover-bg: #40c3a7;
+    --disabled-bg: #bdc3c7; /* Silver */
+    --correct-color: #27ae60; /* Darker Green */
+    --correct-bg: #eafaf1;
+    --incorrect-color: #c0392b; /* Darker Red */
+    --incorrect-bg: #fdedec;
+    --border-color: #e0e0e0;
+    --border-radius: 12px;
+    --border-radius-small: 6px;
+    --box-shadow-light: 0 2px 4px rgba(0,0,0,0.05);
+    --box-shadow-medium: 0 6px 20px var(--container-shadow);
+    --transition-speed: 0.2s;
+
+    /* Emojis */
+    --emoji-penguin: "🐧";
+    --emoji-sparkles: "✨";
+    --emoji-party: "🎉";
+    --emoji-brain: "🧠";
+    --emoji-rocket: "🚀";
+    --emoji-think: "🤔";
+    --emoji-clap: "👏";
+    --emoji-book: "📜";
+    --emoji-sun: "☀️";
+    --emoji-moon: "🌙";
+}
+
+/* Dark Mode Overrides */
+html.dark-mode {
+    --bg-color: #1a202c; /* Dark Blue/Grey */
+    --container-bg: #2d3748; /* Slightly Lighter Dark */
+    --container-shadow: rgba(0, 0, 0, 0.2);
+    --text-color: #e2e8f0; /* Light Grey Text */
+    --light-text: #a0aec0; /* Medium Grey Text */
+    --heading-color: #63b3ed; /* Lighter Blue */
+    --subheading-color: #4fd1c5; /* Lighter Teal */
+    --accent-color: #f6ad55; /* Lighter Orange */
+    --link-color: #63b3ed;
+    --code-bg: #1e2533; /* Darker code bg */
+    --code-text: #fbb6ce; /* Lighter Pink code */
+    --button-bg: #63b3ed;
+    --button-text: #1a202c;
+    --button-hover-bg: #4299e1;
+    --action-button-bg: #4fd1c5;
+    --action-button-hover-bg: #38b2ac;
+    --disabled-bg: #4a5568;
+    --correct-color: #68d391; /* Lighter Green */
+    --correct-bg: #2c4838;
+    --incorrect-color: #fc8181; /* Lighter Red */
+    --incorrect-bg: #543131;
+    --border-color: #4a5568;
+}
+
+/* Base Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    display: flex;
+    flex-direction: column; /* Allow header/footer layout if needed */
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px;
+    line-height: 1.7; /* Slightly more spacing */
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+/* Theme Toggle Button */
+#theme-toggle {
+    position: fixed; /* Keep it accessible */
+    top: 15px;
+    right: 15px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%; /* Circle */
+    width: 45px;
+    height: 45px;
+    font-size: 1.5em; /* Make emoji bigger */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--box-shadow-light);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    z-index: 1000;
+}
+#theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+}
+
+/* Game Container */
+#game-container {
+    background-color: var(--container-bg);
+    padding: 30px clamp(20px, 5vw, 40px); /* Responsive padding */
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-medium);
+    width: 95%;
+    max-width: 650px; /* Slightly wider */
+    text-align: center;
+    margin-top: 60px; /* Space below toggle */
+    margin-bottom: 20px;
+    transition: background-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+/* Headings and Text */
+h1 {
+    color: var(--heading-color);
+    margin-bottom: 15px;
+    font-size: clamp(1.8em, 5vw, 2.2em); /* Responsive font size */
+}
+h2 {
+    color: var(--subheading-color);
+    margin-top: 35px;
+    margin-bottom: 20px;
+    font-size: clamp(1.4em, 4vw, 1.7em);
+    position: relative;
+    padding-bottom: 5px;
+}
+/* Cute underline effect */
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: var(--subheading-color);
+    border-radius: 2px;
+    opacity: 0.6;
+}
+
+p {
+    color: var(--light-text);
+    margin-bottom: 18px;
+    font-size: clamp(0.95em, 2.5vw, 1.05em);
+}
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Code Styling */
+code, .permission-string-display, .option-btn code {
+    font-family: var(--font-mono);
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    padding: 4px 8px; /* Slightly more padding */
+    border-radius: var(--border-radius-small);
+    font-size: 1.1em;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+.permission-string-display {
+    font-size: clamp(1.8em, 6vw, 2.2em);
+    font-weight: bold;
+    color: var(--accent-color);
+    padding: 15px 10px;
+    border-radius: var(--border-radius);
+    margin: 25px 0;
+    display: block;
+    letter-spacing: 3px; /* More spacing */
+    background-color: var(--code-bg); /* Align with code style */
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Subtle inset shadow */
+    word-break: keep-all;
+    white-space: nowrap; /* Prevent breaking */
+}
+
+/* Explanation and Cheat Sheet Sections */
+.explanation-section, #cheat-sheet-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--code-bg); /* Use code background for contrast */
+    color: var(--text-color); /* Use normal text color here */
+    border-radius: var(--border-radius);
+    text-align: left;
+    border-left: 6px solid var(--subheading-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.explanation-section strong, #cheat-sheet-section strong {
+     color: var(--heading-color); /* Primary color for emphasis */
+     font-weight: 700;
+}
+.explanation-section ul, #cheat-sheet-section ul {
+    list-style-position: inside;
+    margin-left: 10px;
+}
+.explanation-section li, #cheat-sheet-section li {
+    margin-bottom: 8px;
+}
+#cheat-sheet-section li code:first-child {
+    display: inline-block;
+    min-width: 50px; /* Align codes */
+    margin-right: 10px;
+}
+
+
+/* Buttons */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Min button width */
+    gap: 15px;
+    margin: 25px 0;
+}
+.option-btn, .action-btn {
+    padding: 14px 18px;
+    font-size: 1.1em; /* Adjusted size */
+    cursor: pointer;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    font-weight: 700;
+    font-family: var(--font-family);
+    box-shadow: var(--box-shadow-light);
+}
+.option-btn code { /* Reset code style inside button */
+     background: none;
+     color: inherit;
+     padding: 0;
+     font-size: inherit;
+     font-family: inherit;
+}
+.option-btn:hover:not(:disabled), .action-btn:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-2px) scale(1.02); /* Lift effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.option-btn:active:not(:disabled), .action-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--box-shadow-light);
+}
+.option-btn:disabled, .action-btn:disabled {
+    background-color: var(--disabled-bg);
+    color: rgba(255,255,255,0.7); /* Slightly faded text */
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+    transform: none;
+}
+.action-btn {
+    background-color: var(--action-button-bg);
+    min-width: 160px;
+    margin-top: 20px;
+}
+.action-btn:hover:not(:disabled) {
+    background-color: var(--action-button-hover-bg);
+}
+
+/* Feedback Area */
+.feedback {
+    margin-top: 20px;
+    font-size: 1.15em;
+    font-weight: bold;
+    min-height: 2em; /* Reserve space */
+    padding: 12px;
+    border-radius: var(--border-radius-small);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    opacity: 0; /* Start hidden for animation */
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+.feedback.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.correct {
+    color: var(--correct-color);
+    background-color: var(--correct-bg);
+}
+.incorrect {
+    color: var(--incorrect-color);
+    background-color: var(--incorrect-bg);
+}
+
+/* Stats Area */
+#stats {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 12px;
+    font-size: 0.95em;
+    color: var(--light-text);
+    background-color: var(--code-bg); /* Match code bg */
+    padding: 15px;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-speed) ease;
+}
+#stats div {
+    background-color: var(--container-bg); /* Contrast with stats bg */
+    color: var(--text-color);
+    padding: 8px 12px;
+    border-radius: var(--border-radius-small);
+    box-shadow: var(--box-shadow-light);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+#stats span {
+    font-weight: bold;
+    color: var(--heading-color);
+    transition: color var(--transition-speed) ease;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important; /* Use important to override potential conflicts */
+}
+
+/* Animation for Phase Transitions */
+@keyframes fadeInScaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.phase-section {
+    animation: fadeInScaleUp 0.4s ease-out;
+}
