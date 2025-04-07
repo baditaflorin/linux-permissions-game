@@ -34,7 +34,15 @@
     --box-shadow-medium: 0 6px 20px var(--container-shadow);
     --transition-speed: 0.2s;
 
-    /* Emojis */
+    /* UGO Colors (Light Mode) */
+    --user-color: var(--accent-color); /* Orange */
+    --user-bg: #fff8e1; /* Light Yellow/Orange */
+    --group-color: var(--subheading-color); /* Teal */
+    --group-bg: #e0f8f4; /* Light Teal */
+    --other-color: var(--heading-color); /* Blue */
+    --other-bg: #e7f3fe; /* Light Blue */
+
+    /* Emojis (Not used directly in CSS often, but good reference) */
     --emoji-penguin: "🐧";
     --emoji-sparkles: "✨";
     --emoji-party: "🎉";
@@ -45,6 +53,11 @@
     --emoji-book: "📜";
     --emoji-sun: "☀️";
     --emoji-moon: "🌙";
+    --emoji-tools: "🛠️";
+    --emoji-target: "🎯";
+    --emoji-timer: "⏱️";
+    --emoji-refresh: "🔄";
+    --emoji-trophy: "🏆";
 }
 
 /* Dark Mode Overrides */
@@ -71,6 +84,14 @@ html.dark-mode {
     --incorrect-color: #fc8181; /* Lighter Red */
     --incorrect-bg: #543131;
     --border-color: #4a5568;
+
+    /* UGO Colors (Dark Mode) */
+    --user-color: #f6ad55; /* Lighter Orange */
+    --user-bg: #423118; /* Dark Orange/Brown */
+    --group-color: #4fd1c5; /* Lighter Teal */
+    --group-bg: #2c4843; /* Dark Teal */
+    --other-color: #63b3ed; /* Lighter Blue */
+    --other-bg: #2a4365; /* Dark Blue */
 }
 
 /* Base Styles */
@@ -114,7 +135,7 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: var(--box-shadow-light);
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
     z-index: 1000;
 }
 #theme-toggle:hover {
@@ -140,6 +161,7 @@ h1 {
     color: var(--heading-color);
     margin-bottom: 15px;
     font-size: clamp(1.8em, 5vw, 2.2em); /* Responsive font size */
+    transition: color var(--transition-speed) ease;
 }
 h2 {
     color: var(--subheading-color);
@@ -148,6 +170,7 @@ h2 {
     font-size: clamp(1.4em, 4vw, 1.7em);
     position: relative;
     padding-bottom: 5px;
+    transition: color var(--transition-speed) ease;
 }
 /* Cute underline effect */
 h2::after {
@@ -161,24 +184,27 @@ h2::after {
     background-color: var(--subheading-color);
     border-radius: 2px;
     opacity: 0.6;
+    transition: background-color var(--transition-speed) ease;
 }
 
 p {
     color: var(--light-text);
     margin-bottom: 18px;
     font-size: clamp(0.95em, 2.5vw, 1.05em);
+    transition: color var(--transition-speed) ease;
 }
 a {
     color: var(--link-color);
     text-decoration: none;
     font-weight: bold;
+    transition: color var(--transition-speed) ease;
 }
 a:hover {
     text-decoration: underline;
 }
 
 /* Code Styling */
-code, .permission-string-display, .option-btn code {
+code, .permission-string-display {
     font-family: var(--font-mono);
     background-color: var(--code-bg);
     color: var(--code-text);
@@ -196,11 +222,13 @@ code, .permission-string-display, .option-btn code {
     margin: 25px 0;
     display: block;
     letter-spacing: 3px; /* More spacing */
-    background-color: var(--code-bg); /* Align with code style */
+    /* background-color: var(--code-bg); */ /* Use code-bg for consistency */
     border: 1px solid var(--border-color);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Subtle inset shadow */
-    word-break: keep-all;
-    white-space: nowrap; /* Prevent breaking */
+    word-break: keep-all; /* Prevent breaking in middle */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow-x: auto; /* Allow scrolling if too long */
+    transition: color var(--transition-speed) ease, border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
 }
 
 /* Explanation and Cheat Sheet Sections */
@@ -212,15 +240,17 @@ code, .permission-string-display, .option-btn code {
     border-radius: var(--border-radius);
     text-align: left;
     border-left: 6px solid var(--subheading-color);
-    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 .explanation-section strong, #cheat-sheet-section strong {
      color: var(--heading-color); /* Primary color for emphasis */
      font-weight: 700;
+     transition: color var(--transition-speed) ease;
 }
 .explanation-section ul, #cheat-sheet-section ul {
     list-style-position: inside;
-    margin-left: 10px;
+    margin-left: 10px; /* Indent list */
+    padding-left: 0; /* Override default padding */
 }
 .explanation-section li, #cheat-sheet-section li {
     margin-bottom: 8px;
@@ -230,7 +260,6 @@ code, .permission-string-display, .option-btn code {
     min-width: 50px; /* Align codes */
     margin-right: 10px;
 }
-
 
 /* Buttons */
 .options-grid {
@@ -243,21 +272,26 @@ code, .permission-string-display, .option-btn code {
     padding: 14px 18px;
     font-size: 1.1em; /* Adjusted size */
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent; /* Add border for consistency */
     border-radius: var(--border-radius);
     background-color: var(--button-bg);
     color: var(--button-text);
-    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
     font-weight: 700;
     font-family: var(--font-family);
     box-shadow: var(--box-shadow-light);
+    display: inline-flex; /* Align icon/text nicely if emojis used */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between text and emoji */
 }
 .option-btn code { /* Reset code style inside button */
      background: none;
      color: inherit;
      padding: 0;
      font-size: inherit;
-     font-family: inherit;
+     font-family: var(--font-mono); /* Keep mono for numbers */
+     font-weight: 700;
 }
 .option-btn:hover:not(:disabled), .action-btn:hover:not(:disabled) {
     background-color: var(--button-hover-bg);
@@ -293,7 +327,6 @@ code, .permission-string-display, .option-btn code {
     min-height: 2em; /* Reserve space */
     padding: 12px;
     border-radius: var(--border-radius-small);
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
     opacity: 0; /* Start hidden for animation */
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease, background-color var(--transition-speed) ease, color var(--transition-speed) ease;
@@ -323,7 +356,7 @@ code, .permission-string-display, .option-btn code {
     background-color: var(--code-bg); /* Match code bg */
     padding: 15px;
     border-radius: var(--border-radius);
-    transition: background-color var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 #stats div {
     background-color: var(--container-bg); /* Contrast with stats bg */
@@ -331,13 +364,88 @@ code, .permission-string-display, .option-btn code {
     padding: 8px 12px;
     border-radius: var(--border-radius-small);
     box-shadow: var(--box-shadow-light);
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 #stats span {
     font-weight: bold;
     color: var(--heading-color);
     transition: color var(--transition-speed) ease;
 }
+
+/* UGO Color Styling Specifics */
+.ugo-user, .user-color {
+    color: var(--user-color);
+    font-weight: 700;
+    transition: color var(--transition-speed) ease;
+}
+.ugo-group, .group-color {
+    color: var(--group-color);
+    font-weight: 700;
+    transition: color var(--transition-speed) ease;
+}
+.ugo-other, .other-color {
+    color: var(--other-color);
+    font-weight: 700;
+    transition: color var(--transition-speed) ease;
+}
+
+/* Apply background highlights in explanations */
+.explanation-section .highlight-user,
+#cheat-sheet-section .highlight-user { /* Apply also in cheat sheet if needed */
+    background-color: var(--user-bg);
+    padding: 2px 5px;
+    border-radius: var(--border-radius-small);
+    border-bottom: 2px solid var(--user-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.explanation-section .highlight-group,
+#cheat-sheet-section .highlight-group {
+    background-color: var(--group-bg);
+    padding: 2px 5px;
+    border-radius: var(--border-radius-small);
+    border-bottom: 2px solid var(--group-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.explanation-section .highlight-other,
+#cheat-sheet-section .highlight-other {
+    background-color: var(--other-bg);
+    padding: 2px 5px;
+    border-radius: var(--border-radius-small);
+    border-bottom: 2px solid var(--other-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+/* Style the UGO parts in permission string examples */
+.perm-example .p-user { color: var(--user-color); }
+.perm-example .p-group { color: var(--group-color); }
+.perm-example .p-other { color: var(--other-color); }
+.perm-example code { /* Ensure code within example spans has transparent bg */
+    background-color: transparent;
+    padding: 0;
+    font-size: inherit; /* Inherit size from parent */
+    color: inherit; /* Inherit color from parent span */
+}
+
+/* Ensure code backgrounds inside highlights are adjusted */
+.explanation-section .highlight-user code,
+.explanation-section .highlight-group code,
+.explanation-section .highlight-other code {
+    background-color: transparent; /* Blend with highlight bg */
+    color: var(--code-text); /* Keep code text color distinct */
+    font-weight: normal; /* Reset font weight if needed */
+}
+
+/* Adjust quiz target group prompt color */
+.quiz-target-group strong {
+    padding: 2px 4px;
+    border-radius: 4px;
+    display: inline-block; /* Ensures background applies correctly */
+    transition: background-color var(--transition-speed) ease;
+}
+.quiz-target-group .user-color { background-color: var(--user-bg); }
+.quiz-target-group .group-color { background-color: var(--group-bg); }
+.quiz-target-group .other-color { background-color: var(--other-bg); }
+
 
 /* Utility Classes */
 .hidden {
@@ -346,9 +454,16 @@ code, .permission-string-display, .option-btn code {
 
 /* Animation for Phase Transitions */
 @keyframes fadeInScaleUp {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
 .phase-section {
     animation: fadeInScaleUp 0.4s ease-out;
+}
+
+/* Emoji Styling (Optional: ensure consistent size/alignment) */
+.emoji {
+    display: inline-block;
+    /* vertical-align: middle; */ /* Adjust if needed */
+    /* margin-left: 4px; */
 }
